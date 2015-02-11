@@ -21,15 +21,34 @@ Now run:
 
 # Usage Example
 
-## Raw Query
+## Basic Usage
 
 ```php
-use \WeDevs\Eloquent\Database as DB;
 
-var_dump( DB::instance()->table('users')->find(1) );
+$db = \WeDevs\Eloquent\Database::instance();
+
+var_dump( $db->table('users')->find(1) );
+var_dump( $db->select('SELECT * FROM wp_users WHERE id = ?', [1]) );
+var_dump( $db->table('users')->where('user_login', 'john')->first() );
+```
+
+### Retrieving All Rows From A Table
+
+```php
+$users = $db->table('users')->get();
+
+foreach ($users as $user) {
+    var_dump($user->display_name);
+}
 ```
 
 Here `users` is the table name **without prefix**. The prefix will be applied automatically.
+
+
+### Other Examples
+
+ - [Queries](http://laravel.com/docs/5.0/queries)
+ - [Eloquent ORM](http://laravel.com/docs/5.0/eloquent)
 
 ## Writing a Model
 
