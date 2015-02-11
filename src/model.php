@@ -20,6 +20,15 @@ abstract class Model extends Eloquent {
     }
 
     /**
+     * Get the database connection for the model.
+     *
+     * @return \Illuminate\Database\Connection
+     */
+    public function getConnection() {
+        return Database::instance();
+    }
+
+    /**
      * Get the table associated with the model.
      *
      * Append the WordPress table prefix with the table name if
@@ -34,6 +43,6 @@ abstract class Model extends Eloquent {
 
         $table = str_replace( '\\', '', snake_case( str_plural( class_basename( $this ) ) ) );
 
-        return static::$resolver->connection()->db->prefix . $table ;
+        return $this->getConnection()->db->prefix . $table ;
     }
 }

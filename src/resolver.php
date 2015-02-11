@@ -13,7 +13,7 @@ class Resolver implements ConnectionResolverInterface {
      * @return \Illuminate\Database\Connection
      */
     public function connection( $name = null ) {
-        return wperp()->db;
+        return Database::instance();
     }
 
     /**

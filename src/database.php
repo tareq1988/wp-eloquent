@@ -11,6 +11,24 @@ class Database implements ConnectionInterface {
 
     public $db;
 
+    /**
+     * Initializes the Database class
+     *
+     * @return \WeDevs\Eloquent\Database
+     */
+    public static function instance() {
+        static $instance = false;
+
+        if ( ! $instance ) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * [__construct description]
+     */
     public function __construct() {
         global $wpdb;
 
