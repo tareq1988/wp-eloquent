@@ -2,6 +2,23 @@
 
 This is a library package to use Laravel's [Eloquent ORM](http://laravel.com/docs/5.0/eloquent) with WordPress.
 
+
+## Package Installation
+
+To install this package, edit your `composer.json` file:
+
+```js
+{
+    "require": {
+        "tareq1988/wp-eloquent": "*"
+    }
+}
+```
+
+Now run:
+
+`$ composer install`
+
 # Usage Example
 
 ## Raw Query
@@ -9,8 +26,7 @@ This is a library package to use Laravel's [Eloquent ORM](http://laravel.com/doc
 ```php
 use \WeDevs\Eloquent\Database as DB;
 
-$db = new DB();
-var_dump( $db->table('users')->find(1) );
+var_dump( DB::instance()->table('users')->find(1) );
 ```
 
 Here `users` is the table name **without prefix**. The prefix will be applied automatically.
@@ -37,8 +53,6 @@ The class name `Post` will be translated into `PREFIX_posts` table to run querie
  - Hence, we have the benfit to use plugins like `debug-bar` or `query-monitor` to get SQL query reporting.
  - It doesn't create any extra MySQL connection
 
-
----
 
 ## Minimum Requirement
  - PHP 5.3.0
