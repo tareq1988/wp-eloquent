@@ -1,8 +1,8 @@
 {
-    "name": "tareq/wp-eloquent",
+    "name": "tareq1988/wp-eloquent",
     "description": "Eloquent ORM for WordPress",
     "keywords": ["wordpress", "plugin", "orm", "eloquent", "sql"],
-    "homepage": "https://github.com/wp-eloquent",
+    "homepage": "https://github.com/tareq1988/wp-eloquent",
     "require": {
         "illuminate/database": "~5.0"
     },
@@ -10,7 +10,7 @@
     "authors": [
         {
             "name": "Tareq Hasan",
-            "email": "tareq@wedevs.com.com"
+            "email": "tareq@wedevs.com"
         }
     ],
     "autoload" : {
