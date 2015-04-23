@@ -62,8 +62,49 @@ class Post extends Model {
 var_dump( Post::all()->toArray() ); // gets all posts
 var_dump( Post::find(1) ); // find posts with ID 1
 ```
-
 The class name `Post` will be translated into `PREFIX_posts` table to run queries. But as usual, you can override the table name.
+
+### Writing a Model for a WordPress post_type
+
+```php
+use \WeDevs\Eloquent\Model as BaseModel;
+
+class BasePostType extends Model {
+	/**
+	 * string The wordpress post_type (optional)
+	 */
+	protected $wp_post_type = null;
+    protected $primaryKey = 'ID';
+    const CREATED_AT = 'post_date';
+    const UPDATED_AT = 'post_modified';
+
+    /**
+     * Extends newQuery to always filter for the model's wordpress post_type
+     */
+    public function newQuery(){
+    	$q = parent::newQuery();
+    	if (!empty($this->wp_post_type)){
+        	$q->where("post_type",$this->wp_post_type);
+    	}
+    	return $q;
+    }
+}
+```
+
+```php
+class Post extends BasePostType {
+    protected $wp_post_type = "post";
+}
+
+var_dump( Post::all() ); //returns only posts with wordpress post_type "post"
+```
+
+```php
+class MyCustomPostType extends BasePostType {
+    protected $wp_post_type = "my_custom_post_type";
+}
+var_dump( MyCustomPostType::all() ); //returns only posts with wordpress post_type "my_custom_post_type"
+```
 
 ## How it Works
 
