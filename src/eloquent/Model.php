@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\Eloquent;
+namespace WeDevs\ORM\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
