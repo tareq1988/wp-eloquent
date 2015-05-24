@@ -14,7 +14,7 @@ class Database implements ConnectionInterface {
     /**
      * Initializes the Database class
      *
-     * @return \WeDevs\Eloquent\Database
+     * @return \WeDevs\ORM\Eloquent\Database
      */
     public static function instance() {
         static $instance = false;
@@ -291,7 +291,7 @@ class Database implements ConnectionInterface {
     /**
      * Return self as PDO
      *
-     * @return \WeDevs\ERP\Framework\Database
+     * @return \WeDevs\ORM\Eloquent\Database
      */
     public function getPdo() {
         return $this;
