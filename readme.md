@@ -25,7 +25,7 @@ Now run:
 
 ```php
 
-$db = \WeDevs\Eloquent\Database::instance();
+$db = \WeDevs\ORM\Eloquent\Database::instance();
 
 var_dump( $db->table('users')->find(1) );
 var_dump( $db->select('SELECT * FROM wp_users WHERE id = ?', [1]) );
@@ -53,57 +53,38 @@ Here `users` is the table name **without prefix**. The prefix will be applied au
 ## Writing a Model
 
 ```php
-use \WeDevs\Eloquent\Model as Model;
+use \WeDevs\ORM\Eloquent\Model as Model;
 
-class Post extends Model {
-    protected $primaryKey = 'ID';
+class Employee extends Model {
+
 }
 
-var_dump( Post::all()->toArray() ); // gets all posts
-var_dump( Post::find(1) ); // find posts with ID 1
+var_dump( Employee::all()->toArray() ); // gets all employees
+var_dump( Employee::find(1) ); // find employee with ID 1
 ```
-The class name `Post` will be translated into `PREFIX_posts` table to run queries. But as usual, you can override the table name.
+The class name `Employee` will be translated into `PREFIX_employees` table to run queries. But as usual, you can override the table name.
 
-### Writing a Model for a WordPress post_type
+### In-built Models for WordPress
+
+- Post
+- Comment
+- Post Meta
+- User
+- User Meta
+
 
 ```php
-use \WeDevs\Eloquent\Model as BaseModel;
+use WeDevs\ORM\WP\Post as Post;
 
-class BasePostType extends Model {
-	/**
-	 * string The wordpress post_type (optional)
-	 */
-	protected $wp_post_type = null;
-    protected $primaryKey = 'ID';
-    const CREATED_AT = 'post_date';
-    const UPDATED_AT = 'post_modified';
-
-    /**
-     * Extends newQuery to always filter for the model's wordpress post_type
-     */
-    public function newQuery(){
-    	$q = parent::newQuery();
-    	if (!empty($this->wp_post_type)){
-        	$q->where("post_type",$this->wp_post_type);
-    	}
-    	return $q;
-    }
-}
+var_dump( Post::all() ); //returns only posts with WordPress post_type "post"
 ```
 
+#### Filter `Post` by `post_status` and `post_type`
 ```php
-class Post extends BasePostType {
-    protected $wp_post_type = "post";
-}
-
-var_dump( Post::all() ); //returns only posts with wordpress post_type "post"
-```
-
-```php
-class MyCustomPostType extends BasePostType {
-    protected $wp_post_type = "my_custom_post_type";
-}
-var_dump( MyCustomPostType::all() ); //returns only posts with wordpress post_type "my_custom_post_type"
+use WeDevs\ORM\WP\Post as Post;
+var_dump(Post::type('page')->get()->toArray()); // get pages
+var_dump(Post::status('publish')->get()->toArray()); // get posts with publish status
+var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages with publish status
 ```
 
 ## How it Works
