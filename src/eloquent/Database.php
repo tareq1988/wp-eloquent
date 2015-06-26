@@ -157,7 +157,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function delete( $query, $bindings = array() ) {
-        // TODO: Implement delete() method.
+        $this->update( $query, $bindings );
     }
 
     /**
