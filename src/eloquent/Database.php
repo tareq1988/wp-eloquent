@@ -114,7 +114,7 @@ class Database implements ConnectionInterface {
                     $replace = "'" . esc_sql( $replace ) . "'";
                 }
 
-                $query = preg_replace('/\?/', $replace, $query, 1);
+                $query = preg_replace('/= \?/', '= ' . $replace, $query, 1);
             }
         }
 
