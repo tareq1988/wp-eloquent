@@ -99,7 +99,7 @@ class Database implements ConnectionInterface {
      *
      * @return mixed
      */
-    private function bind_params( $query, $bindings ) {
+    private function bind_params( $query, $bindings, $update = false ) {
 
         $query    = str_replace( '"', '`', $query );
         $bindings = $this->prepareBindings( $bindings );
@@ -114,11 +114,29 @@ class Database implements ConnectionInterface {
                     $replace = "'" . esc_sql( $replace ) . "'";
                 }
 
-                $query = preg_replace('/= \?/', '= ' . $replace, $query, 1);
+                if ( ! $update ) {
+                    $query = preg_replace('/\?/', $replace, $query, 1);
+                } else {
+                    $query = preg_replace('/= \?/', '= ' . $replace, $query, 1);
+                }
             }
         }
 
         return $query;
+    }
+
+    /**
+     * Bind and run the query
+     *
+     * @param  string  $query
+     * @param  array  $bindings
+     *
+     * @return array
+     */
+    public function bind_and_run( $query, $bindings = array() ) {
+        $new_query = $this->bind_params( $query, $bindings );
+
+        $this->db->query( $new_query );
     }
 
     /**
@@ -130,8 +148,7 @@ class Database implements ConnectionInterface {
      * @return bool
      */
     public function insert( $query, $bindings = array() ) {
-        // TODO: Implement insert() method.
-        $this->update( $query, $bindings );
+        $this->bind_and_run( $query, $bindings );
     }
 
     /**
@@ -143,7 +160,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function update( $query, $bindings = array() ) {
-        $new_query = $this->bind_params( $query, $bindings );
+        $new_query = $this->bind_params( $query, $bindings, true );
 
         $this->db->query( $new_query );
     }
@@ -157,7 +174,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function delete( $query, $bindings = array() ) {
-        $this->update( $query, $bindings );
+        $this->bind_and_run( $query, $bindings );
     }
 
     /**
