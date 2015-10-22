@@ -112,6 +112,8 @@ class Database implements ConnectionInterface {
             foreach ( $bindings as $replace ) {
                 if ( is_string( $replace ) ) {
                     $replace = "'" . esc_sql( $replace ) . "'";
+                } elseif ( $replace === null ) {
+                    $replace = "null";
                 }
 
                 if ( ! $update ) {
