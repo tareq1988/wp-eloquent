@@ -326,4 +326,34 @@ class Database implements ConnectionInterface {
     public function lastInsertId( $args ) {
         return $this->db->insert_id;
     }
+
+    /**
+     * Get a schema builder instance for the connection.
+     *
+     * @return \Illuminate\Database\Schema\Builder
+     */
+    public function getSchemaBuilder()
+    {
+        return new Schema\Builder($this);
+    }
+
+    /**
+     * Get the schema grammar used by the connection.
+     *
+     * @return \Illuminate\Database\Schema\Grammars\Grammar
+     */
+    public function getSchemaGrammar()
+    {
+        return new Schema\Grammars\MySqlGrammar();
+    }
+
+    /**
+     * Get the table prefix for the connection.
+     *
+     * @return string
+     */
+    public function getTablePrefix()
+    {
+        return $this->db->prefix;
+    }
 }

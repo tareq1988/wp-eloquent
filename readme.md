@@ -87,6 +87,23 @@ var_dump(Post::status('publish')->get()->toArray()); // get posts with publish s
 var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages with publish status
 ```
 
+#### Create Database Schema
+```php
+$db = \WeDevs\ORM\Eloquent\Database::instance();
+
+$schema = $db->getSchemaBuilder();
+
+$schema->create('order', function (\WeDevs\ORM\Eloquent\Schema\Blueprint $table) {
+  $table->bigIncrements('id')->unsigned();
+  $table->bigInteger('order_id')->unsigned();
+  $table->bigInteger('product_id')->unsigned();
+  $table->integer('qty')->unsigned();
+  $table->decimal('subtotal', 10, 0);
+});
+
+$schema->drop('order');
+```
+
 ## How it Works
 
  - Eloquent is mainly used here as the query builder
