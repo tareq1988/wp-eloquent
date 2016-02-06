@@ -1,0 +1,32 @@
+<?php
+
+use WeDevs\ORM\Eloquent\Facades\Schema;
+use WeDevs\ORM\Eloquent\Migration;
+use WeDevs\ORM\Eloquent\Schema\Blueprint;
+
+class DummyClass extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('DummyTable', function (Blueprint $table) {
+            //
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('DummyTable', function (Blueprint $table) {
+            //
+        });
+    }
+}

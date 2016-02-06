@@ -49,6 +49,7 @@ Here `users` is the table name **without prefix**. The prefix will be applied au
 
  - [Queries](http://laravel.com/docs/5.0/queries)
  - [Eloquent ORM](http://laravel.com/docs/5.0/eloquent)
+ - [Migrations](https://laravel.com/docs/5.0/migrations)
 
 ## Writing a Model
 
@@ -87,21 +88,29 @@ var_dump(Post::status('publish')->get()->toArray()); // get posts with publish s
 var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages with publish status
 ```
 
-#### Create Database Schema
+## Database Migrations Support
 ```php
-$db = \WeDevs\ORM\Eloquent\Database::instance();
+use WeDevs\ORM\Eloquent\Facades\Schema;
+use WeDevs\ORM\Eloquent\Migration;
+use WeDevs\ORM\Eloquent\Schema\Blueprint;
 
-$schema = $db->getSchemaBuilder();
+class CreateDemoTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('demo', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title');
+            $table->text('description');
+            $table->timestamps();
+        });
+    }
 
-$schema->create('order', function (\WeDevs\ORM\Eloquent\Schema\Blueprint $table) {
-  $table->bigIncrements('id')->unsigned();
-  $table->bigInteger('order_id')->unsigned();
-  $table->bigInteger('product_id')->unsigned();
-  $table->integer('qty')->unsigned();
-  $table->decimal('subtotal', 10, 0);
-});
-
-$schema->drop('order');
+    public function down()
+    {
+        Schema::drop('demo');
+    }
+}
 ```
 
 ## How it Works
