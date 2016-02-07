@@ -54,8 +54,8 @@ class Eloquent_Command extends WP_CLI_Command
     public function make($args, $assoc_args)
     {
         list($name) = $args;
-        $class_name = ucwords(strtolower($name), "_");
-        $class_name = str_replace("_", "", $class_name);
+        $class_name = ucwords(str_replace("_", " ", strtolower($name)));
+        $class_name = str_replace(" ", "", $class_name);
 
         $table = $assoc_args['table'] ?: null;
         $create = $assoc_args['create'] ?: null;
