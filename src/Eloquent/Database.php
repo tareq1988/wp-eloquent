@@ -295,7 +295,7 @@ class Database implements ConnectionInterface {
      *
      * @return array
      */
-    public function pretend( Closure $callback ) {
+    public function pretend( \Closure $callback ) {
         // TODO: Implement pretend() method.
     }
 
