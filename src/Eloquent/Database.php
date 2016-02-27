@@ -248,7 +248,7 @@ class Database implements ConnectionInterface {
      *
      * @throws \Exception
      */
-    public function transaction( Closure $callback ) {
+    public function transaction( \Closure $callback ) {
         // TODO: Implement transaction() method.
     }
 
@@ -295,7 +295,7 @@ class Database implements ConnectionInterface {
      *
      * @return array
      */
-    public function pretend( Closure $callback ) {
+    public function pretend( \Closure $callback ) {
         // TODO: Implement pretend() method.
     }
 
