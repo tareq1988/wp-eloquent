@@ -14,8 +14,9 @@
         }
     ],
     "autoload" : {
-      "psr-4" : {
-        "WeDevs\\ORM\\": "src/"
-      }
+        "psr-4" : {
+            "WeDevs\\ORM\\": "src/"
+        },
+        "files": [ "src/eloquent-command.php" ]
     }
 }
