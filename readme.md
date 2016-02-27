@@ -30,6 +30,13 @@ $db = \WeDevs\ORM\Eloquent\Database::instance();
 var_dump( $db->table('users')->find(1) );
 var_dump( $db->select('SELECT * FROM wp_users WHERE id = ?', [1]) );
 var_dump( $db->table('users')->where('user_login', 'john')->first() );
+
+// OR with DB facade
+use \WeDevs\ORM\Eloquent\Facades\DB;
+
+var_dump( DB::table('users')->find(1) );
+var_dump( DB::select('SELECT * FROM wp_users WHERE id = ?', [1]) );
+var_dump( DB::table('users')->where('user_login', 'john')->first() );
 ```
 
 ### Retrieving All Rows From A Table
@@ -88,11 +95,9 @@ var_dump(Post::status('publish')->get()->toArray()); // get posts with publish s
 var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages with publish status
 ```
 
-## Database Migrations Support
+## Database Migrations
 ```php
-use WeDevs\ORM\Eloquent\Facades\Schema;
 use WeDevs\ORM\Eloquent\Migration;
-use WeDevs\ORM\Eloquent\Schema\Blueprint;
 
 class CreateDemoTable extends Migration
 {
