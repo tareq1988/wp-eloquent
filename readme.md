@@ -96,27 +96,42 @@ var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages 
 ```
 
 ## Database Migrations
-```php
-use WeDevs\ORM\Eloquent\Migration;
 
-class CreateDemoTable extends Migration
-{
-    public function up()
+1. Create a **migrations** directory inside your plugin/project root directory (or where you've put composer.json file).
+
+2. Navigate your project and run below **wp-cli** command.
+
+    ```
+    wp eloquent make create_demo_table --create=demo
+    ```
+
+3. Then you will find a migration file in **migrations** dir. Make it as yours needed. See below example:
+    ```php
+    use WeDevs\ORM\Eloquent\Migration;
+
+    class CreateDemoTable extends Migration
     {
-        Schema::create('demo', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title');
-            $table->text('description');
-            $table->timestamps();
-        });
+        public function up()
+        {
+            Schema::create('demo', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('title');
+                $table->text('description');
+                $table->timestamps();
+            });
+        }
+
+        public function down()
+        {
+            Schema::drop('demo');
+        }
     }
 
-    public function down()
-    {
-        Schema::drop('demo');
-    }
-}
-```
+    ```
+4. After modifying your migration just run migrate command.
+    ```
+    wp eloquent migrate
+    ```
 
 ## How it Works
 
