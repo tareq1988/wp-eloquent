@@ -1,8 +1,8 @@
 {
-    "name": "tareq1988/wp-eloquent",
+    "name": "appzcoder/wp-eloquent",
     "description": "Eloquent ORM for WordPress",
     "keywords": ["wordpress", "plugin", "orm", "eloquent", "sql"],
-    "homepage": "https://github.com/tareq1988/wp-eloquent",
+    "homepage": "https://github.com/appzcoder/wp-eloquent",
     "require": {
         "illuminate/database": "~5.0"
     },
