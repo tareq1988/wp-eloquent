@@ -107,7 +107,9 @@ var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages 
 
 3. Then you will find a migration file in **migrations** dir. Make it as yours needed. See below example:
     ```php
+    use WeDevs\ORM\Eloquent\Facades\Schema;
     use WeDevs\ORM\Eloquent\Migration;
+    use WeDevs\ORM\Eloquent\Schema\Blueprint;
 
     class CreateDemoTable extends Migration
     {
