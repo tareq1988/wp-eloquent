@@ -52,6 +52,7 @@ class Migrator
     protected function getMigrationList()
     {
         $migrationJsonFile = $this->migrationDir . '/migrations.json';
+        //var_dump($this->migrationDir); exit;
 
         if (!file_exists($migrationJsonFile)) {
             file_put_contents($migrationJsonFile, json_encode([]));
@@ -65,6 +66,8 @@ class Migrator
 
     /**
      * Save migrated migration list to json file.
+     *
+     * @param  string $newMigrationList
      *
      * @return boolean
      */
@@ -116,9 +119,10 @@ class Migrator
         if (!empty($migrated)) {
             $newMigrationList = array_merge($migrationList, $migrated);
             $this->saveMigrationListToFile($newMigrationList);
-            //echo "Migrated:  $migration.php \n";
+            // Display migration message
+            $this->displayMigrationMessaage($migrated, 'up');
         } else {
-            echo "Nothing to migrate.";
+            echo "Nothing to migrate.\n";
         }
     }
 
@@ -148,9 +152,10 @@ class Migrator
         if (!empty($migrated)) {
             $newMigrationList = array_diff($migrationList, $migrated);
             $this->saveMigrationListToFile($newMigrationList);
-            //echo "Migrated:  $migration.php \n";
+            // Display migration message
+            $this->displayMigrationMessaage($migrated, 'down');
         } else {
-            echo "Nothing to migrate.";
+            echo "Nothing to rolled back.\n";
         }
     }
 
@@ -164,5 +169,31 @@ class Migrator
         $this->runDown();
 
         $this->runUp();
+    }
+
+    /**
+     * Display migration message.
+     *
+     * @param  array $list
+     *
+     * @return void
+     */
+    protected function displayMigrationMessaage($list, $action = 'up')
+    {
+        $list = array_map(function ($file) {
+            return str_replace('.php', '', basename($file));
+        }, $list);
+
+        if ($action == 'down') {
+            foreach ($list as $migration) {
+                echo "Rolled back: $migration\n";
+            }
+        }
+
+        if ($action == 'up') {
+            foreach ($list as $migration) {
+                echo "Migrated: $migration\n";
+            }
+        }
     }
 }
