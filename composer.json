@@ -4,7 +4,7 @@
     "keywords": ["wordpress", "plugin", "orm", "eloquent", "sql"],
     "homepage": "https://github.com/tareq1988/wp-eloquent",
     "require": {
-        "illuminate/database": "~5.0"
+        "illuminate/database": "5.0.*"
     },
     "license": "GPL",
     "authors": [
