@@ -108,21 +108,17 @@ class Database implements ConnectionInterface {
             return $query;
         }
 
-        if ( $bindings ) {
-            foreach ( $bindings as $replace ) {
-                if ( is_string( $replace ) ) {
-                    $replace = "'" . esc_sql( $replace ) . "'";
-                } elseif ( $replace === null ) {
-                    $replace = "null";
-                }
-
-                if ( ! $update ) {
-                    $query = preg_replace('/\?/', $replace, $query, 1);
-                } else {
-                    $query = preg_replace('/= \?/', '= ' . $replace, $query, 1);
-                }
+        $bindings = array_map( function( $replace ) {
+            if ( is_string( $replace ) ) {
+                $replace = "'" . esc_sql( $replace ) . "'";
+            } elseif ( $replace === null ) {
+                $replace = "null";
             }
-        }
+
+            return $replace;
+        }, $bindings );
+
+        $query = vsprintf( str_replace( "?", "%s", $query ), $bindings );
 
         return $query;
     }
