@@ -101,24 +101,25 @@ class Database implements ConnectionInterface {
      */
     private function bind_params( $query, $bindings, $update = false ) {
 
-        $query    = str_replace( array( '"', '?' ), array( '`', '<!-replace->' ), $query );
+        $query    = str_replace( '"', '`', $query );
         $bindings = $this->prepareBindings( $bindings );
 
         if ( ! $bindings ) {
             return $query;
         }
 
-        if ( $bindings ) {
-            foreach ( $bindings as $replace ) {
-                if ( is_string( $replace ) ) {
-                    $replace = "'" . esc_sql( $replace ) . "'";
-                } elseif ( $replace === null ) {
-                    $replace = "null";
-                }
-
-                $query = preg_replace( '/<!-replace->/', $replace, $query, 1 );
+        $bindings = array_map( function( $replace ) {
+            if ( is_string( $replace ) ) {
+                $replace = "'" . esc_sql( $replace ) . "'";
+            } elseif ( $replace === null ) {
+                $replace = "null";
             }
-        }
+
+            return $replace;
+        }, $bindings );
+
+        $query = str_replace( array( '%', '?' ), array( '%%', '%s' ), $query );
+        $query = vsprintf( $query, $bindings );
 
         return $query;
     }
