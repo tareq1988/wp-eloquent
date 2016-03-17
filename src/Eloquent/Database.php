@@ -101,7 +101,7 @@ class Database implements ConnectionInterface {
      */
     private function bind_params( $query, $bindings, $update = false ) {
 
-        $query    = str_replace( '"', '`', $query );
+        $query    = str_replace( array( '"', '?' ), array( '`', '<!-replace->' ), $query );
         $bindings = $this->prepareBindings( $bindings );
 
         if ( ! $bindings ) {
@@ -116,11 +116,7 @@ class Database implements ConnectionInterface {
                     $replace = "null";
                 }
 
-                if ( ! $update ) {
-                    $query = preg_replace('/\?/', $replace, $query, 1);
-                } else {
-                    $query = preg_replace('/= \?/', '= ' . $replace, $query, 1);
-                }
+                $query = preg_replace( '/<!-replace->/', $replace, $query, 1 );
             }
         }
 
