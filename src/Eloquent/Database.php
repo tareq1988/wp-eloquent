@@ -118,7 +118,8 @@ class Database implements ConnectionInterface {
             return $replace;
         }, $bindings );
 
-        $query = vsprintf( str_replace( "?", "%s", $query ), $bindings );
+        $query = str_replace( array( '%', '?' ), array( '%%', '%s' ), $query );
+        $query = vsprintf( $query, $bindings );
 
         return $query;
     }
