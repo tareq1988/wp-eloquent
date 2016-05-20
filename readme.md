@@ -30,6 +30,13 @@ $db = \WeDevs\ORM\Eloquent\Database::instance();
 var_dump( $db->table('users')->find(1) );
 var_dump( $db->select('SELECT * FROM wp_users WHERE id = ?', [1]) );
 var_dump( $db->table('users')->where('user_login', 'john')->first() );
+
+// OR with DB facade
+use \WeDevs\ORM\Eloquent\Facades\DB;
+
+var_dump( DB::table('users')->find(1) );
+var_dump( DB::select('SELECT * FROM wp_users WHERE id = ?', [1]) );
+var_dump( DB::table('users')->where('user_login', 'john')->first() );
 ```
 
 ### Retrieving All Rows From A Table
