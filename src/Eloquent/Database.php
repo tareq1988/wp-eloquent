@@ -135,7 +135,7 @@ class Database implements ConnectionInterface {
     public function bind_and_run( $query, $bindings = array() ) {
         $new_query = $this->bind_params( $query, $bindings );
 
-        $this->db->query( $new_query );
+        return $this->db->query( $new_query );
     }
 
     /**
@@ -173,7 +173,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function delete( $query, $bindings = array() ) {
-        $this->bind_and_run( $query, $bindings );
+        return $this->bind_and_run( $query, $bindings );
     }
 
     /**
