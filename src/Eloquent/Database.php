@@ -12,6 +12,13 @@ class Database implements ConnectionInterface {
     public $db;
 
     /**
+     * Count of active transactions
+     *
+     * @var int
+     */
+    public $transactionCount = 0;
+
+    /**
      * Initializes the Database class
      *
      * @return \WeDevs\ORM\Eloquent\Database
@@ -257,7 +264,10 @@ class Database implements ConnectionInterface {
      * @return void
      */
     public function beginTransaction() {
-        // TODO: Implement beginTransaction() method.
+        $transaction = $this->unprepared('START TRANSACTION;');
+        if ($transaction) {
+            $this->transactionCount++;
+        }
     }
 
     /**
@@ -266,7 +276,13 @@ class Database implements ConnectionInterface {
      * @return void
      */
     public function commit() {
-        // TODO: Implement commit() method.
+        if ($this->transactionCount < 1) {
+            return;
+        }
+        $transaction = $this->unprepared('COMMIT;');
+        if ($transaction) {
+            $this->transactionCount--;
+        }
     }
 
     /**
@@ -275,7 +291,13 @@ class Database implements ConnectionInterface {
      * @return void
      */
     public function rollBack() {
-        // TODO: Implement rollBack() method.
+        if ($this->transactionCount < 1) {
+            return;
+        }
+        $transaction = $this->unprepared('ROLLBACK;');
+        if ($transaction) {
+            $this->transactionCount--;
+        }
     }
 
     /**
@@ -284,7 +306,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function transactionLevel() {
-        // TODO: Implement transactionLevel() method.
+        return $this->transactionCount;
     }
 
     /**
