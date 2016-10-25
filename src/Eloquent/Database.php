@@ -185,7 +185,9 @@ class Database implements ConnectionInterface {
      * @return bool
      */
     public function statement( $query, $bindings = array() ) {
-        // TODO: Implement statement() method.
+        $new_query = $this->bind_params( $query, $bindings, true );
+
+        return $this->unprepared( $new_query );
     }
 
     /**
@@ -197,7 +199,9 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function affectingStatement( $query, $bindings = array() ) {
-        // TODO: Implement affectingStatement() method.
+        $new_query = $this->bind_params( $query, $bindings, true );
+
+        return intval($this->db->query( $new_query ));
     }
 
     /**
@@ -208,7 +212,7 @@ class Database implements ConnectionInterface {
      * @return bool
      */
     public function unprepared( $query ) {
-        // TODO: Implement unprepared() method.
+        return ( $this->db->query( $query ) !== false );
     }
 
     /**
