@@ -147,7 +147,7 @@ class Database implements ConnectionInterface {
      * @return bool
      */
     public function insert( $query, $bindings = array() ) {
-        $this->bind_and_run( $query, $bindings );
+        return $this->statement($query, $bindings);
     }
 
     /**
@@ -159,9 +159,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function update( $query, $bindings = array() ) {
-        $new_query = $this->bind_params( $query, $bindings, true );
-
-        $this->db->query( $new_query );
+        return $this->affectingStatement($query, $bindings);
     }
 
     /**
@@ -173,7 +171,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function delete( $query, $bindings = array() ) {
-        $this->bind_and_run( $query, $bindings );
+        return $this->affectingStatement($query, $bindings);
     }
 
     /**
