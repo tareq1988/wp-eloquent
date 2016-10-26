@@ -232,13 +232,18 @@ class Database implements ConnectionInterface {
 
         foreach ( $bindings as $key => $value ) {
 
-            // We need to transform all instances of the DateTime class into an actual
-            // date string. Each query grammar maintains its own date string format
-            // so we'll just ask the grammar for the format to get from the date.
-            if ( $value instanceof DateTime ) {
+            // Micro-optimization: check for scalar values before instances
+            if ( is_bool( $value ) ) {
+                $bindings[ $key ] = intval($value);
+            }
+            elseif ( is_scalar( $value ) ) {
+                continue;
+            }
+            elseif ( $value instanceof DateTime ) {
+                // We need to transform all instances of the DateTime class into an actual
+                // date string. Each query grammar maintains its own date string format
+                // so we'll just ask the grammar for the format to get from the date.
                 $bindings[ $key ] = $value->format( $grammar->getDateFormat() );
-            } elseif ( $value === false ) {
-                $bindings[ $key ] = 0;
             }
         }
 
