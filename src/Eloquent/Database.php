@@ -12,6 +12,13 @@ class Database implements ConnectionInterface {
     public $db;
 
     /**
+     * Count of active transactions
+     *
+     * @var int
+     */
+    public $transactionCount = 0;
+
+    /**
      * Initializes the Database class
      *
      * @return \WeDevs\ORM\Eloquent\Database
@@ -147,7 +154,7 @@ class Database implements ConnectionInterface {
      * @return bool
      */
     public function insert( $query, $bindings = array() ) {
-        $this->bind_and_run( $query, $bindings );
+        return $this->statement($query, $bindings);
     }
 
     /**
@@ -159,9 +166,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function update( $query, $bindings = array() ) {
-        $new_query = $this->bind_params( $query, $bindings, true );
-
-        $this->db->query( $new_query );
+        return $this->affectingStatement($query, $bindings);
     }
 
     /**
@@ -173,7 +178,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function delete( $query, $bindings = array() ) {
-        $this->bind_and_run( $query, $bindings );
+        return $this->affectingStatement($query, $bindings);
     }
 
     /**
@@ -185,7 +190,9 @@ class Database implements ConnectionInterface {
      * @return bool
      */
     public function statement( $query, $bindings = array() ) {
-        // TODO: Implement statement() method.
+        $new_query = $this->bind_params( $query, $bindings, true );
+
+        return $this->unprepared( $new_query );
     }
 
     /**
@@ -197,7 +204,9 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function affectingStatement( $query, $bindings = array() ) {
-        // TODO: Implement affectingStatement() method.
+        $new_query = $this->bind_params( $query, $bindings, true );
+
+        return intval($this->db->query( $new_query ));
     }
 
     /**
@@ -208,7 +217,7 @@ class Database implements ConnectionInterface {
      * @return bool
      */
     public function unprepared( $query ) {
-        // TODO: Implement unprepared() method.
+        return ( $this->db->query( $query ) !== false );
     }
 
     /**
@@ -223,13 +232,18 @@ class Database implements ConnectionInterface {
 
         foreach ( $bindings as $key => $value ) {
 
-            // We need to transform all instances of the DateTime class into an actual
-            // date string. Each query grammar maintains its own date string format
-            // so we'll just ask the grammar for the format to get from the date.
-            if ( $value instanceof DateTime ) {
+            // Micro-optimization: check for scalar values before instances
+            if ( is_bool( $value ) ) {
+                $bindings[ $key ] = intval($value);
+            }
+            elseif ( is_scalar( $value ) ) {
+                continue;
+            }
+            elseif ( $value instanceof DateTime ) {
+                // We need to transform all instances of the DateTime class into an actual
+                // date string. Each query grammar maintains its own date string format
+                // so we'll just ask the grammar for the format to get from the date.
                 $bindings[ $key ] = $value->format( $grammar->getDateFormat() );
-            } elseif ( $value === false ) {
-                $bindings[ $key ] = 0;
             }
         }
 
@@ -255,7 +269,10 @@ class Database implements ConnectionInterface {
      * @return void
      */
     public function beginTransaction() {
-        // TODO: Implement beginTransaction() method.
+        $transaction = $this->unprepared('START TRANSACTION;');
+        if ($transaction) {
+            $this->transactionCount++;
+        }
     }
 
     /**
@@ -264,7 +281,13 @@ class Database implements ConnectionInterface {
      * @return void
      */
     public function commit() {
-        // TODO: Implement commit() method.
+        if ($this->transactionCount < 1) {
+            return;
+        }
+        $transaction = $this->unprepared('COMMIT;');
+        if ($transaction) {
+            $this->transactionCount--;
+        }
     }
 
     /**
@@ -273,7 +296,13 @@ class Database implements ConnectionInterface {
      * @return void
      */
     public function rollBack() {
-        // TODO: Implement rollBack() method.
+        if ($this->transactionCount < 1) {
+            return;
+        }
+        $transaction = $this->unprepared('ROLLBACK;');
+        if ($transaction) {
+            $this->transactionCount--;
+        }
     }
 
     /**
@@ -282,7 +311,7 @@ class Database implements ConnectionInterface {
      * @return int
      */
     public function transactionLevel() {
-        // TODO: Implement transactionLevel() method.
+        return $this->transactionCount;
     }
 
     /**
