@@ -258,8 +258,8 @@ class Database implements ConnectionInterface
     {
         $result = $this->db->query($query);
 
-        if ($result === false || $this->wpdb->last_error) {
-            throw new QueryException($query, [], new \Exception($this->wpdb->last_error));
+        if ($result === false || $this->db->last_error) {
+            throw new QueryException($query, [], new \Exception($this->db->last_error));
         }
 
         return $result;
