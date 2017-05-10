@@ -258,7 +258,11 @@ class Database implements ConnectionInterface
     {
         $result = $this->db->query($query);
 
-        return ($result === false || $this->db->last_error);
+        if ($result === false || $this->wpdb->last_error) {
+            throw new QueryException($query, [], new \Exception($this->wpdb->last_error));
+        }
+
+        return $result;
     }
 
     /**
@@ -319,10 +323,8 @@ class Database implements ConnectionInterface
      */
     public function beginTransaction()
     {
-        $transaction = $this->unprepared("START TRANSACTION;");
-        if ($transaction) {
-            $this->transactionCount++;
-        }
+        $this->unprepared("START TRANSACTION;");
+        $this->transactionCount++;
     }
 
     /**
@@ -335,10 +337,8 @@ class Database implements ConnectionInterface
         if ($this->transactionCount < 1) {
             return;
         }
-        $transaction = $this->unprepared("COMMIT;");
-        if ($transaction) {
-            $this->transactionCount--;
-        }
+        $this->unprepared("COMMIT;");
+        $this->transactionCount--;
     }
 
     /**
@@ -351,10 +351,8 @@ class Database implements ConnectionInterface
         if ($this->transactionCount < 1) {
             return;
         }
-        $transaction = $this->unprepared("ROLLBACK;");
-        if ($transaction) {
-            $this->transactionCount--;
-        }
+        $this->unprepared("ROLLBACK;");
+        $this->transactionCount--;
     }
 
     /**
