@@ -57,7 +57,7 @@ You can use custom tables of the WordPress databases to create models:
 
 
 		/**
-		 * Columns that can be edited - IE not primary key and timestamps if being uses
+		 * Columns that can be edited - IE not primary key or timestamps if being used
 		 */
 		protected $fillable = [
 			'city',
