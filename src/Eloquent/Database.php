@@ -8,7 +8,6 @@ use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 class Database implements ConnectionInterface
 {
