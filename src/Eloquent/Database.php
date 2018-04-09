@@ -7,6 +7,8 @@ use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class Database implements ConnectionInterface
 {
@@ -19,6 +21,13 @@ class Database implements ConnectionInterface
      * @var int
      */
     public $transactionCount = 0;
+
+    /**
+     * The database connection configuration options.
+     *
+     * @var array
+     */
+    protected $config = [];
 
     /**
      * Initializes the Database class
@@ -43,7 +52,20 @@ class Database implements ConnectionInterface
     {
         global $wpdb;
 
+        $this->config = [
+            'name' => 'wp-eloquent-mysql2',
+        ];
         $this->db = $wpdb;
+    }
+
+    /**
+     * Get the database connection name.
+     *
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->getConfig('name');
     }
 
     /**
@@ -294,12 +316,13 @@ class Database implements ConnectionInterface
      * Execute a Closure within a transaction.
      *
      * @param  \Closure $callback
+     * @param  int  $attempts
      *
      * @return mixed
      *
      * @throws \Exception
      */
-    public function transaction(\Closure $callback)
+    public function transaction(\Closure $callback, $attempts = 1)
     {
         $this->beginTransaction();
         try {
@@ -409,5 +432,16 @@ class Database implements ConnectionInterface
     public function lastInsertId($args)
     {
         return $this->db->insert_id;
+    }
+
+    /**
+     * Get an option from the configuration options.
+     *
+     * @param  string|null  $option
+     * @return mixed
+     */
+    public function getConfig($option = null)
+    {
+        return Arr::get($this->config, $option);
     }
 }
