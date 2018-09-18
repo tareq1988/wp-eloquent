@@ -102,11 +102,12 @@ class Database implements ConnectionInterface
      *
      * @param  string $query
      * @param  array $bindings
+     * @param  bool $useReadPdo
      * @throws QueryException
      *
      * @return mixed
      */
-    public function selectOne($query, $bindings = array())
+    public function selectOne($query, $bindings = [], $useReadPdo = true)
     {
         $query = $this->bind_params($query, $bindings);
 
@@ -123,11 +124,12 @@ class Database implements ConnectionInterface
      *
      * @param  string $query
      * @param  array $bindings
+     * @param  bool $useReadPdo
      * @throws QueryException
      *
      * @return array
      */
-    public function select($query, $bindings = array())
+    public function select($query, $bindings = [], $useReadPdo = true)
     {
         $query = $this->bind_params($query, $bindings);
 
@@ -137,6 +139,20 @@ class Database implements ConnectionInterface
             throw new QueryException($query, $bindings, new \Exception($this->db->last_error));
 
         return $result;
+    }
+
+    /**
+     * Run a select statement against the database and returns a generator.
+     * TODO: Implement cursor and all the related sub-methods.
+     *
+     * @param  string  $query
+     * @param  array  $bindings
+     * @param  bool  $useReadPdo
+     * @return \Generator
+     */
+    public function cursor($query, $bindings = [], $useReadPdo = true)
+    {
+
     }
 
     /**
