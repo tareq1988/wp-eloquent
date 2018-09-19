@@ -358,7 +358,7 @@ class Database implements ConnectionInterface
     public function beginTransaction()
     {
         $transaction = $this->unprepared("START TRANSACTION;");
-        if ($transaction) {
+        if (false !== $transaction) {
             $this->transactionCount++;
         }
     }
@@ -374,7 +374,7 @@ class Database implements ConnectionInterface
             return;
         }
         $transaction = $this->unprepared("COMMIT;");
-        if ($transaction) {
+        if (false !== $transaction) {
             $this->transactionCount--;
         }
     }
@@ -390,7 +390,7 @@ class Database implements ConnectionInterface
             return;
         }
         $transaction = $this->unprepared("ROLLBACK;");
-        if ($transaction) {
+        if (false !== $transaction) {
             $this->transactionCount--;
         }
     }
