@@ -30,11 +30,6 @@ class Post extends Model {
     /**
      * @var string
      */
-    protected $post_type = null;
-
-    /**
-     * @var string
-     */
     protected $primaryKey = 'ID';
 
     /**
