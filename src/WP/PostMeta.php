@@ -2,17 +2,25 @@
 
 namespace WeDevs\ORM\WP;
 
-
 use WeDevs\ORM\Eloquent\Model;
 
-class PostMeta extends Model
-{
+class PostMeta extends Model {
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * @var string
+     */
     protected $primaryKey = 'meta_id';
 
-    public $timestamps    = false;
-
-    public function getTable()
-    {
+    /**
+     * @return string
+     */
+    public function getTable() {
         return $this->getConnection()->db->prefix . 'postmeta';
     }
+
 }

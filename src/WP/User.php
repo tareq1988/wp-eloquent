@@ -3,15 +3,26 @@
 namespace WeDevs\ORM\WP;
 
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use WeDevs\ORM\Eloquent\Model;
 
-class User extends Model
-{
+class User extends Model {
+
+    /**
+     * @var string
+     */
     protected $primaryKey = 'ID';
+
+    /**
+     * @var bool
+     */
     protected $timestamp = false;
 
-    public function meta()
-    {
-        return $this->hasMany('WeDevs\ORM\WP\UserMeta', 'user_id');
+    /**
+     * @return HasMany
+     */
+    public function meta() {
+        return $this->hasMany( UserMeta::class, 'user_id' );
     }
+
 }

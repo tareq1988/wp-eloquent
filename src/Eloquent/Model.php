@@ -13,19 +13,10 @@ abstract class Model extends Eloquent {
     /**
      * @param array $attributes
      */
-    public function __construct( array $attributes = array() ) {
+    public function __construct( array $attributes = [] ) {
         static::$resolver = new Resolver();
 
         parent::__construct( $attributes );
-    }
-
-    /**
-     * Get the database connection for the model.
-     *
-     * @return \Illuminate\Database\Connection
-     */
-    public function getConnection() {
-        return Database::instance();
     }
 
     /**
@@ -43,6 +34,16 @@ abstract class Model extends Eloquent {
 
         $table = str_replace( '\\', '', snake_case( str_plural( class_basename( $this ) ) ) );
 
-        return $this->getConnection()->db->prefix . $table ;
+        return $this->getConnection()->db->prefix . $table;
     }
+
+    /**
+     * Get the database connection for the model.
+     *
+     * @return Database
+     */
+    public function getConnection() {
+        return Database::instance();
+    }
+
 }

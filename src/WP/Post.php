@@ -3,6 +3,7 @@
 namespace WeDevs\ORM\WP;
 
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use WeDevs\ORM\Eloquent\Model;
 
 /**
@@ -10,73 +11,93 @@ use WeDevs\ORM\Eloquent\Model;
  *
  * @package WeDevs\ORM\WP
  */
-class Post extends Model
-{
+class Post extends Model {
 
+    /**
+     * @var string
+     */
+    const CREATED_AT = 'post_date';
+
+    /**
+     * @var string
+     */
+    const UPDATED_AT = 'post_modified';
+
+    /**
+     * @var string
+     */
     protected $post_type = null;
+
+    /**
+     * @var string
+     */
     protected $primaryKey = 'ID';
 
-    const CREATED_AT = 'post_date';
-    const UPDATED_AT = 'post_modified';
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'post_title',
+        'post_content',
+        'post_author',
+    ];
 
     /**
      * Filter by post type
      *
-     * @param $query
+     * @param        $query
      * @param string $type
      *
      * @return mixed
      */
-    public function scopeType($query, $type = 'post')
-    {
-        return $query->where('post_type', '=', $type);
+    public function scopeType( $query, $type = 'post' ) {
+        return $query->where( 'post_type', '=', $type );
     }
 
     /**
      * Filter by post status
      *
-     * @param $query
+     * @param        $query
      * @param string $status
      *
      * @return mixed
      */
-    public function scopeStatus($query, $status = 'publish')
-    {
-        return $query->where('post_status', '=', $status);
+    public function scopeStatus( $query, $status = 'publish' ) {
+        return $query->where( 'post_status', '=', $status );
     }
 
     /**
      * Filter by post author
      *
-     * @param $query
+     * @param      $query
      * @param null $author
      *
      * @return mixed
      */
-    public function scopeAuthor($query, $author = null)
-    {
-        if ($author) {
-            return $query->where('post_author', '=', $author);
+    public function scopeAuthor( $query, $author = null ) {
+        if ( $author ) {
+            return $query->where( 'post_author', '=', $author );
         }
+
+        return null;
     }
 
     /**
      * Get comments from the post
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function comments()
-    {
-        return $this->hasMany('WeDevs\ORM\WP\Comment', 'comment_post_ID');
+    public function comments() {
+        return $this->hasMany( Comment::class, 'comment_post_ID' );
     }
 
     /**
      * Get meta fields from the post
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function meta()
-    {
-        return $this->hasMany('WeDevs\ORM\WP\PostMeta', 'post_id');
+    public function meta() {
+        return $this->hasMany( PostMeta::class, 'post_id' );
     }
+
 }

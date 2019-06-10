@@ -2,20 +2,23 @@
 
 namespace WeDevs\ORM\WP;
 
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use WeDevs\ORM\Eloquent\Model;
 
-class Comment extends Model
-{
+class Comment extends Model {
+
+    /**
+     * @var string
+     */
     protected $primaryKey = 'comment_ID';
 
     /**
      * Post relation for a comment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function post()
-    {
-        return $this->hasOne('WeDevs\ORM\WP\Post');
+    public function post() {
+        return $this->hasOne( Post::class );
     }
+
 }

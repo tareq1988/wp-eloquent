@@ -1,4 +1,5 @@
 <?php
+
 namespace WeDevs\ORM\Eloquent;
 
 use Illuminate\Database\ConnectionResolverInterface;
@@ -8,9 +9,9 @@ class Resolver implements ConnectionResolverInterface {
     /**
      * Get a database connection instance.
      *
-     * @param  string $name
+     * @param string $name
      *
-     * @return \Illuminate\Database\Connection
+     * @return Database
      */
     public function connection( $name = null ) {
         return Database::instance();
@@ -28,11 +29,12 @@ class Resolver implements ConnectionResolverInterface {
     /**
      * Set the default connection name.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return void
      */
     public function setDefaultConnection( $name ) {
         // TODO: Implement setDefaultConnection() method.
     }
+
 }
