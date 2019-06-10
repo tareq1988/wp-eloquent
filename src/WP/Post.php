@@ -50,10 +50,18 @@ class Post extends Model {
     /**
      * @var array
      */
+    protected $attributes = [
+        'post_type' => 'post',
+    ];
+
+    /**
+     * @var array
+     */
     protected $fillable = [
         'post_title',
         'post_content',
         'post_author',
+        'post_type',
     ];
 
     /**
