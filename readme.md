@@ -10,7 +10,7 @@ To install this package, edit your `composer.json` file:
 ```js
 {
     "require": {
-        "tareq1988/wp-eloquent": "dev-master"
+        "TheUnderScorer/wp-eloquent": "master"
     }
 }
 ```
