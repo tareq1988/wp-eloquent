@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use WeDevs\ORM\Eloquent\Model;
-use WPK\Core\Models\WP\WithMeta;
 
 /**
  * Class Post

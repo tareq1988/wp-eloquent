@@ -2,9 +2,7 @@
 
 namespace WeDevs\ORM\WP;
 
-
 use WeDevs\ORM\Eloquent\Model;
-use WPK\Core\Models\WP\WithMeta;
 
 /**
  * Class User

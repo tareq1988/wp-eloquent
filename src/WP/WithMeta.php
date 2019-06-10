@@ -1,6 +1,6 @@
 <?php
 
-namespace WPK\Core\Models\WP;
+namespace WeDevs\ORM\WP;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
