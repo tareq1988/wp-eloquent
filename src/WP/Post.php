@@ -3,8 +3,11 @@
 namespace WeDevs\ORM\WP;
 
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use WeDevs\ORM\Eloquent\Model;
+use WPK\Core\Models\WP\WithMeta;
 
 /**
  * Class Post
@@ -12,6 +15,8 @@ use WeDevs\ORM\Eloquent\Model;
  * @package WeDevs\ORM\WP
  */
 class Post extends Model {
+
+    use WithMeta;
 
     /**
      * @var string
@@ -32,6 +37,16 @@ class Post extends Model {
      * @var string
      */
     protected $primaryKey = 'ID';
+
+    /**
+     * @var string
+     */
+    protected $metaRelation = PostMeta::class;
+
+    /**
+     * @var string
+     */
+    protected $metaForeignKey = 'post_id';
 
     /**
      * @var array
@@ -92,12 +107,64 @@ class Post extends Model {
     }
 
     /**
-     * Get meta fields from the post
+     * @param string $taxonomy
      *
-     * @return HasMany
+     * @return TermTaxonomy[] | Collection
      */
-    public function meta() {
-        return $this->hasMany( PostMeta::class, 'post_id' );
+    public function taxonomy( string $taxonomy ) {
+        return $this->taxonomies()->where( 'taxonomy', '=', $taxonomy )->get();
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function taxonomies() {
+
+        $pivotTable = $this->getConnection()->db->prefix . 'term_relationships';
+
+        return $this->belongsToMany( TermTaxonomy::class, $pivotTable, 'object_id', 'term_taxonomy_id' );
+
+    }
+
+    /**
+     * Attaches provided array of terms into post instance
+     *
+     * @param string $taxonomy
+     * @param array  $terms Array of terms with "name" and "slug" keys
+     *
+     * @return void
+     */
+    public function addTerms( string $taxonomy, array $terms ) {
+
+        foreach ( $terms as $term ) {
+
+            $name = $term[ 'name' ];
+            $slug = $term[ 'slug' ];
+
+            /**
+             * @var Term $term
+             */
+            $term = Term::query()->firstOrCreate( [
+                'name' => $name,
+                'slug' => $slug,
+            ] );
+
+            /**
+             * @var TermTaxonomy $termTaxonomy Relation between term and taxonomy
+             */
+            $termTaxonomy = TermTaxonomy::query()->firstOrCreate(
+                [
+                    'term_taxonomy_id' => $term->term_id,
+                    'term_id'          => $term->term_id,
+                    'taxonomy'         => $taxonomy,
+                ]
+            );
+
+            // Attach created term taxonomy into post instance
+            $this->taxonomies()->attach( $termTaxonomy );
+
+        }
+
     }
 
 }

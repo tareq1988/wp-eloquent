@@ -3,10 +3,16 @@
 namespace WeDevs\ORM\WP;
 
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use WeDevs\ORM\Eloquent\Model;
+use WPK\Core\Models\WP\WithMeta;
 
+/**
+ * Class User
+ * @package WeDevs\ORM\WP
+ */
 class User extends Model {
+
+    use WithMeta;
 
     /**
      * @var string
@@ -19,10 +25,13 @@ class User extends Model {
     protected $timestamp = false;
 
     /**
-     * @return HasMany
+     * @var string
      */
-    public function meta() {
-        return $this->hasMany( UserMeta::class, 'user_id' );
-    }
+    protected $metaRelation = UserMeta::class;
+
+    /**
+     * @var string
+     */
+    protected $metaForeignKey = 'user_id';
 
 }
