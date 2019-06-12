@@ -7,6 +7,8 @@ use Illuminate\Support\Collection;
 
 /**
  * @method HasMany hasMany( string $related, string $foreignKey = null, string $localKey = null )
+ * @property string $metaRelation
+ * @property string $metaForeignKey
  */
 trait WithMeta {
 
