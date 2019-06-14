@@ -1,23 +1,13 @@
 # Eloquent Wrapper for WordPress
 
-This is a library package to use Laravel's [Eloquent ORM](http://laravel.com/docs/5.0/eloquent) with WordPress.
+This is a library package to use Laravel's [Eloquent ORM](http://laravel.com/docs/5.0/eloquent) with WordPress. It's an fork of original https://github.com/tareq1988/wp-eloquent library that seems to be abandoned. 
 
 
 ## Package Installation
 
-To install this package, edit your `composer.json` file:
+To install this package run:
 
-```js
-{
-    "require": {
-        "TheUnderScorer/wp-eloquent": "master"
-    }
-}
-```
-
-Now run:
-
-`$ composer install`
+`$ composer require the-under-scorer/wp-eloquent`
 
 # Usage Example
 
@@ -25,14 +15,14 @@ Now run:
 
 ```php
 
-$db = \WeDevs\ORM\Eloquent\Database::instance();
+$db = \UnderScorer\ORM\Eloquent\Database::instance();
 
 var_dump( $db->table('users')->find(1) );
 var_dump( $db->select('SELECT * FROM wp_users WHERE id = ?', [1]) );
 var_dump( $db->table('users')->where('user_login', 'john')->first() );
 
 // OR with DB facade
-use \WeDevs\ORM\Eloquent\Facades\DB;
+use \UnderScorer\ORM\Eloquent\Facades\DB;
 
 var_dump( DB::table('users')->find(1) );
 var_dump( DB::select('SELECT * FROM wp_users WHERE id = ?', [1]) );
@@ -46,7 +36,7 @@ You can use custom tables of the WordPress databases to create models:
 	namespace whatever;
 
 
-	class CustomTableModel extends \WeDevs\ORM\Eloquent\Model {
+	class CustomTableModel extends \UnderScorer\ORM\Eloquent\Model {
 
 		/**
 		 * Name for table without prefix
@@ -127,7 +117,7 @@ Here `users` is the table name **without prefix**. The prefix will be applied au
 ## Writing a Model
 
 ```php
-use \WeDevs\ORM\Eloquent\Model as Model;
+use \UnderScorer\ORM\Eloquent\Model as Model;
 
 class Employee extends Model {
 
@@ -145,6 +135,8 @@ The class name `Employee` will be translated into `PREFIX_employees` table to ru
 - Post Meta
 - User
 - User Meta
+- Term
+- TermTaxonomy
 
 
 ```php
@@ -155,7 +147,7 @@ var_dump( Post::all() ); //returns only posts with WordPress post_type "post"
 
 #### Filter `Post` by `post_status` and `post_type`
 ```php
-use WeDevs\ORM\WP\Post as Post;
+use UnderScorer\WP\Post;
 var_dump(Post::type('page')->get()->toArray()); // get pages
 var_dump(Post::status('publish')->get()->toArray()); // get posts with publish status
 var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages with publish status
@@ -175,3 +167,4 @@ var_dump(Post::type('page')->status('publish')->get()->toArray()); // get pages 
 
 ## Author
 [Tareq Hasan](https://tareq.co)
+[Przemysław Żydek](https://github.com/TheUnderScorer)
