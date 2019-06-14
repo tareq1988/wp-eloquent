@@ -1,5 +1,6 @@
 {
   "name": "the-under-scorer/wp-eloquent",
+  "version": "1.2.0",
   "description": "Eloquent ORM for WordPress",
   "keywords": [
     "wordpress",
