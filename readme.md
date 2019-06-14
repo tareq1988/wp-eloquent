@@ -140,7 +140,7 @@ The class name `Employee` will be translated into `PREFIX_employees` table to ru
 
 
 ```php
-use WeDevs\ORM\WP\Post as Post;
+use UnderScorer\WP\Post;
 
 var_dump( Post::all() ); //returns only posts with WordPress post_type "post"
 ```
