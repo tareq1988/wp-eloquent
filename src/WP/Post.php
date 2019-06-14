@@ -3,8 +3,10 @@
 namespace UnderScorer\ORM\WP;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use UnderScorer\ORM\Eloquent\Model;
 
@@ -25,11 +27,12 @@ use UnderScorer\ORM\Eloquent\Model;
  * @property string guid
  * @property string post_mime_type
  * @property string comment_count
- * @property int menu_order
+ * @property int    menu_order
  * @property Carbon post_date
  * @property Carbon post_date_gmt
  * @property Carbon post_modified
  * @property Carbon post_modified_gmt
+ * @property User author
  */
 class Post extends Model {
 
@@ -195,6 +198,13 @@ class Post extends Model {
 
         }
 
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function author(): BelongsTo {
+        return $this->belongsTo( User::class, 'post_author' );
     }
 
 }

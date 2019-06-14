@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use UnderScorer\ORM\Tests\TestCase;
 use UnderScorer\ORM\WP\Post;
+use UnderScorer\ORM\WP\User;
 
 /**
  * Class PostTest
@@ -184,6 +185,32 @@ final class PostTest extends TestCase {
         $this->assertEquals(
             $post->post_modified->toDateTimeString(),
             Carbon::now()->toDateTimeString()
+        );
+
+    }
+
+    /**
+     * @covers \UnderScorer\ORM\WP\Post::author
+     */
+    public function testHasRelationToUser(): void {
+
+        /**
+         * @var User $user
+         */
+        $user = $this->userFactory->create();
+
+        /**
+         * @var Post $post
+         */
+        $post = $this->postFactory->create( [
+            'post_author' => $user->ID,
+        ] );
+
+        $author = $post->author;
+
+        $this->assertEquals(
+            $author->ID,
+            $user->ID
         );
 
     }
