@@ -1,5 +1,5 @@
 <?php
-namespace WeDevs\ORM\Eloquent;
+namespace UnderScorer\ORM\Eloquent;
 
 use Closure;
 use DateTime;
@@ -17,7 +17,7 @@ use wpdb;
 
 /**
  * Class Database
- * @package WeDevs\ORM\Eloquent
+ * @package UnderScorer\ORM\Eloquent
  */
 class Database implements ConnectionInterface {
 

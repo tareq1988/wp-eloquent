@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\ORM\WP;
+namespace UnderScorer\ORM\WP;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;

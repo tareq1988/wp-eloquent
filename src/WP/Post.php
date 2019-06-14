@@ -1,17 +1,16 @@
 <?php
 
-namespace WeDevs\ORM\WP;
-
+namespace UnderScorer\ORM\WP;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-use WeDevs\ORM\Eloquent\Model;
+use UnderScorer\ORM\Eloquent\Model;
 
 /**
  * Class Post
  *
- * @package WeDevs\ORM\WP
+ * @package UnderScorer\ORM\WP
  */
 class Post extends Model {
 

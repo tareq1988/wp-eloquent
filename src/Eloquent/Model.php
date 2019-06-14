@@ -1,12 +1,12 @@
 <?php
-namespace WeDevs\ORM\Eloquent;
+namespace UnderScorer\ORM\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Model Class
  *
- * @package WeDevs\ERP\Framework
+ * @package UnderScorer\ERP\Framework
  */
 abstract class Model extends Eloquent {
 

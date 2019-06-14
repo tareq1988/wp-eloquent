@@ -1,8 +1,8 @@
 <?php
 
-namespace WeDevs\ORM\WP;
+namespace UnderScorer\ORM\WP;
 
-use WeDevs\ORM\Eloquent\Model;
+use UnderScorer\ORM\Eloquent\Model;
 
 class UserMeta extends Model {
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\ORM\WP;
+namespace UnderScorer\ORM\WP;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use WeDevs\ORM\Eloquent\Model;
+use UnderScorer\ORM\Eloquent\Model;
 
 /**
  * Class Term

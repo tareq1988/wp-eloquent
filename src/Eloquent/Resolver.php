@@ -1,6 +1,6 @@
 <?php
 
-namespace WeDevs\ORM\Eloquent;
+namespace UnderScorer\ORM\Eloquent;
 
 use Illuminate\Database\ConnectionResolverInterface;
 

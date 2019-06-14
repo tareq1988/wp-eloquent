@@ -1,12 +1,12 @@
 <?php
 
-namespace WeDevs\ORM\WP;
+namespace UnderScorer\ORM\WP;
 
-use WeDevs\ORM\Eloquent\Model;
+use UnderScorer\ORM\Eloquent\Model;
 
 /**
  * Class User
- * @package WeDevs\ORM\WP
+ * @package UnderScorer\ORM\WP
  */
 class User extends Model {
 

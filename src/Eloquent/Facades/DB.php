@@ -1,9 +1,9 @@
 <?php
 
-namespace WeDevs\ORM\Eloquent\Facades;
+namespace UnderScorer\ORM\Eloquent\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use WeDevs\ORM\Eloquent\Database;
+use UnderScorer\ORM\Eloquent\Database;
 
 /**
  * @see \Illuminate\Database\DatabaseManager
