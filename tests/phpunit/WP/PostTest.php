@@ -2,6 +2,7 @@
 
 namespace UnderScorer\ORM\Tests\WP;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use UnderScorer\ORM\Tests\TestCase;
 use UnderScorer\ORM\WP\Post;
@@ -128,6 +129,61 @@ final class PostTest extends TestCase {
         $this->assertEquals(
             $post->post_title,
             $posts[ 0 ]->post_title
+        );
+
+    }
+
+    /**
+     * @covers \UnderScorer\ORM\WP\Post
+     */
+    public function testReturnsCarbonInstanceForDateProperties(): void {
+
+        /**
+         * @var Post $post
+         */
+        $post = $this->postFactory->create();
+
+        $this->assertInstanceOf(
+            Carbon::class,
+            $post->post_date
+        );
+
+        $this->assertInstanceOf(
+            Carbon::class,
+            $post->post_date_gmt
+        );
+
+        $this->assertInstanceOf(
+            Carbon::class,
+            $post->post_modified
+        );
+
+    }
+
+    /**
+     * @covers \UnderScorer\ORM\WP\Post
+     * @covers \UnderScorer\ORM\WP\Post::update
+     */
+    public function testIsUpdatingModifiedDateOnUpdate(): void {
+
+        /**
+         * @var Post $post
+         */
+        $post = $this->postFactory->create();
+
+        $this->assertEquals(
+            $post->post_modified->toDateTimeString(),
+            Carbon::now()->toDateTimeString()
+        );
+
+        sleep( 1 );
+
+        $post->post_title = 'Updated!';
+        $post->save();
+
+        $this->assertEquals(
+            $post->post_modified->toDateTimeString(),
+            Carbon::now()->toDateTimeString()
         );
 
     }
