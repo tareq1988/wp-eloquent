@@ -2,6 +2,7 @@
 
 namespace UnderScorer\ORM\WP;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -11,6 +12,14 @@ use UnderScorer\ORM\Eloquent\Model;
  * Class Post
  *
  * @package UnderScorer\ORM\WP
+ *
+ * @property int    post_author
+ * @property string post_title
+ * @property string post_content
+ * @property string post_excerpt
+ * @property Carbon post_date
+ * @property Carbon post_date_gmt
+ * @property Carbon post_modified
  */
 class Post extends Model {
 
@@ -46,6 +55,15 @@ class Post extends Model {
      */
     protected $attributes = [
         'post_type' => 'post',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $dates = [
+        'post_date',
+        'post_date_gmt',
+        'post_modified',
     ];
 
     /**

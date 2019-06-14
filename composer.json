@@ -13,6 +13,10 @@
     "illuminate/database": "^5.4",
     "illuminate/pagination": "^5.4"
   },
+  "require-dev": {
+    "vlucas/phpdotenv": "^3.3",
+    "phpunit/phpunit": "7.5.9"
+  },
   "license": "GPL-2.0-or-later",
   "authors": [
     {
@@ -27,6 +31,11 @@
   "autoload": {
     "psr-4": {
       "UnderScorer\\ORM\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "UnderScorer\\ORM\\Tests\\": "tests/phpunit"
     }
   }
 }

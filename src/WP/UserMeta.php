@@ -2,19 +2,15 @@
 
 namespace UnderScorer\ORM\WP;
 
-use UnderScorer\ORM\Eloquent\Model;
-
-class UserMeta extends Model {
-
-    /**
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
-     * @var string
-     */
-    protected $primaryKey = 'meta_id';
+/**
+ * Class UserMeta
+ * @package UnderScorer\ORM\WP
+ *
+ * @property string meta_key
+ * @property mixed  meta_value
+ *
+ */
+class UserMeta extends PostMeta {
 
 
     /**

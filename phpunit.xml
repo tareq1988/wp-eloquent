@@ -1,0 +1,7 @@
+<phpunit bootstrap="tests/phpunit/bootstrap.php" backupGlobals="false">
+    <testsuites>
+        <testsuite name="WP Eloquent">
+            <directory suffix="Test.php">./tests/phpunit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

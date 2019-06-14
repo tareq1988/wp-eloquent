@@ -4,6 +4,7 @@ namespace UnderScorer\ORM\WP;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use UnderScorer\ORM\Contracts\MetaInterface;
 
 /**
  * @method HasMany hasMany( string $related, string $foreignKey = null, string $localKey = null )
@@ -13,21 +14,11 @@ use Illuminate\Support\Collection;
 trait WithMeta {
 
     /**
-     * @var string
-     */
-    protected $metaRelation;
-
-    /**
-     * @var string
-     */
-    protected $metaForeignKey;
-
-    /**
      * @param string $key
      *
-     * @return mixed
+     * @return MetaInterface
      */
-    public function getSingleMeta( string $key ) {
+    public function getSingleMeta( string $key ): MetaInterface {
 
         return $this
             ->meta()
@@ -49,10 +40,13 @@ trait WithMeta {
      * @param string $key
      * @param mixed  $value
      *
-     * @return mixed
+     * @return MetaInterface
      */
-    public function addMeta( string $key, $value ) {
+    public function addMeta( string $key, $value ): MetaInterface {
 
+        /**
+         * @var MetaInterface $meta
+         */
         $meta = $this->meta()->create( [
             'meta_key'   => $key,
             'meta_value' => $value,
@@ -65,7 +59,7 @@ trait WithMeta {
     /**
      * @param string $key
      *
-     * @return Collection
+     * @return Collection|MetaInterface[]
      */
     public function getMeta( string $key ) {
 
