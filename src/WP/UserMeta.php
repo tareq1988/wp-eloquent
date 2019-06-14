@@ -12,7 +12,6 @@ namespace UnderScorer\ORM\WP;
  */
 class UserMeta extends PostMeta {
 
-
     /**
      * @return string
      */

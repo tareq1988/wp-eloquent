@@ -17,9 +17,19 @@ use UnderScorer\ORM\Eloquent\Model;
  * @property string post_title
  * @property string post_content
  * @property string post_excerpt
+ * @property string comment_status
+ * @property string post_status
+ * @property string post_type
+ * @property string post_content_filtered
+ * @property string post_parent
+ * @property string guid
+ * @property string post_mime_type
+ * @property string comment_count
+ * @property int menu_order
  * @property Carbon post_date
  * @property Carbon post_date_gmt
  * @property Carbon post_modified
+ * @property Carbon post_modified_gmt
  */
 class Post extends Model {
 
@@ -64,6 +74,7 @@ class Post extends Model {
         'post_date',
         'post_date_gmt',
         'post_modified',
+        'post_modified_gmt',
     ];
 
     /**
