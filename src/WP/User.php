@@ -65,4 +65,26 @@ class User extends Model {
         return $this->hasMany( Comment::class, 'user_id' );
     }
 
+    /**
+     * @return static | null
+     */
+    public static function current() {
+
+        static $user;
+
+        if ( empty( $user ) ) {
+
+            $userID = get_current_user_id();
+
+            /**
+             * @var static $user
+             */
+            $user = static::query()->find( $userID );
+
+        }
+
+        return $user;
+
+    }
+
 }
