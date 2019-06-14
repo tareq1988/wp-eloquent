@@ -31,6 +31,23 @@ use UnderScorer\ORM\Eloquent\Model;
 class Comment extends Model {
 
     /**
+     * @var array
+     */
+    protected $fillable = [
+        'comment_parent',
+        'comment_type',
+        'comment_agent',
+        'comment_approved',
+        'comment_karma',
+        'comment_content',
+        'comment_author_IP',
+        'comment_author_url',
+        'comment_author_email',
+        'comment_post_ID',
+        'comment_author',
+    ];
+
+    /**
      * @var string
      */
     protected $primaryKey = 'comment_ID';

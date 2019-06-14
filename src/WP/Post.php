@@ -33,6 +33,7 @@ use UnderScorer\ORM\Eloquent\Model;
  * @property Carbon post_modified
  * @property Carbon post_modified_gmt
  * @property User author
+ * @property Comment[] comments
  */
 class Post extends Model {
 
