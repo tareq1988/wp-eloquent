@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/TheUnderScorer/wp-eloquent.svg?branch=master)](https://travis-ci.com/TheUnderScorer/wp-eloquent)
+
 # Eloquent Wrapper for WordPress
 
 This is a library package to use Laravel's [Eloquent ORM](http://laravel.com/docs/5.0/eloquent) with WordPress. It's an fork of original https://github.com/tareq1988/wp-eloquent library that seems to be abandoned. 
