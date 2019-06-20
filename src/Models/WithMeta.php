@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderScorer\ORM\WP;
+namespace UnderScorer\ORM\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -11,14 +11,16 @@ use UnderScorer\ORM\Contracts\MetaInterface;
  * @property string $metaRelation
  * @property string $metaForeignKey
  */
-trait WithMeta {
+trait WithMeta
+{
 
     /**
      * @param string $key
      *
      * @return MetaInterface
      */
-    public function getSingleMeta( string $key ): MetaInterface {
+    public function getSingleMeta( string $key ): MetaInterface
+    {
 
         return $this
             ->meta()
@@ -32,7 +34,8 @@ trait WithMeta {
     /**
      * @return HasMany
      */
-    public function meta() {
+    public function meta()
+    {
         return $this->hasMany( $this->metaRelation, $this->metaForeignKey );
     }
 
@@ -42,7 +45,8 @@ trait WithMeta {
      *
      * @return MetaInterface
      */
-    public function addMeta( string $key, $value ): MetaInterface {
+    public function addMeta( string $key, $value ): MetaInterface
+    {
 
         /**
          * @var MetaInterface $meta
@@ -61,7 +65,8 @@ trait WithMeta {
      *
      * @return Collection|MetaInterface[]
      */
-    public function getMeta( string $key ) {
+    public function getMeta( string $key )
+    {
 
         return $this
             ->meta()

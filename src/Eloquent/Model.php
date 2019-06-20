@@ -1,19 +1,22 @@
 <?php
+
 namespace UnderScorer\ORM\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
+
 /**
- * Model Class
- *
- * @package UnderScorer\ERP\Framework
+ * Class Model
+ * @package UnderScorer\ORM\Eloquent
  */
-abstract class Model extends Eloquent {
+abstract class Model extends Eloquent
+{
 
     /**
      * @param array $attributes
      */
-    public function __construct( array $attributes = [] ) {
+    public function __construct( array $attributes = [] )
+    {
         static::$resolver = new Resolver();
 
         parent::__construct( $attributes );
@@ -27,7 +30,8 @@ abstract class Model extends Eloquent {
      *
      * @return string
      */
-    public function getTable() {
+    public function getTable()
+    {
         if ( isset( $this->table ) ) {
             return $this->table;
         }
@@ -42,7 +46,8 @@ abstract class Model extends Eloquent {
      *
      * @return Database
      */
-    public function getConnection() {
+    public function getConnection()
+    {
         return Database::instance();
     }
 

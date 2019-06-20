@@ -1,0 +1,47 @@
+version: '3.3'
+
+services:
+
+  test_wp:
+    image: wordpress:5.1.1-php7.3-apache
+    restart: always
+    depends_on:
+      - mysql_test
+    environment:
+      WORDPRESS_DB_HOST: mysql_phpunit
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD:
+      WORDPRESS_DB_NAME: wordpress_test
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - ./:/var/www/html/wp-content/plugins/wp-eloquent:rw
+      - wp:/var/www/html:rw
+
+  test_wp_cli:
+    image: wordpress:cli-php7.3
+    depends_on:
+      - mysql_test
+      - test_wp
+    environment:
+      - APACHE_RUN_USER="www-data"
+      - APACHE_RUN_GROUP="www-data"
+    volumes:
+      - wp:/var/www/html:rw
+
+  wordpress_phpunit:
+    image: chriszarate/wordpress-phpunit:6.0.6
+    depends_on:
+      - mysql_test
+    volumes:
+      - ./:/app
+      - ./tests/phpunit/Suite:/tmp
+
+  mysql_test:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: wordpress_test
+      MYSQL_ROOT_PASSWORD: root
+
+volumes:
+  wp: {}

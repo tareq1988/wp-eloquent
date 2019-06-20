@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderScorer\ORM\WP;
+namespace UnderScorer\ORM\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -18,7 +18,8 @@ use UnderScorer\ORM\Eloquent\Model;
  * @property int    count
  * @property Term   term
  */
-class TermTaxonomy extends Model {
+class TermTaxonomy extends Model
+{
 
     /**
      * @var bool
@@ -45,7 +46,8 @@ class TermTaxonomy extends Model {
     /**
      * @return BelongsToMany
      */
-    public function posts() {
+    public function posts()
+    {
         $pivotTable = $this->getConnection()->db->prefix . 'term_relationships';
 
         return $this->belongsToMany( Post::class, $pivotTable, 'term_taxonomy_id', 'object_id' );
@@ -54,14 +56,16 @@ class TermTaxonomy extends Model {
     /**
      * @return HasOne
      */
-    public function term() {
+    public function term()
+    {
         return $this->hasOne( Term::class, 'term_id' );
     }
 
     /**
      * @return string
      */
-    public function getTable() {
+    public function getTable()
+    {
         return $this->getConnection()->db->prefix . 'term_taxonomy';
     }
 

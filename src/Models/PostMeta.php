@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderScorer\ORM\WP;
+namespace UnderScorer\ORM\Models;
 
 use UnderScorer\ORM\Contracts\MetaInterface;
 use UnderScorer\ORM\Eloquent\Model;
@@ -10,9 +10,10 @@ use UnderScorer\ORM\Eloquent\Model;
  * @package UnderScorer\ORM\WP
  *
  * @property string meta_key
- * @property mixed meta_value
+ * @property mixed  meta_value
  */
-class PostMeta extends Model implements MetaInterface {
+class PostMeta extends Model implements MetaInterface
+{
 
     /**
      * @var bool
@@ -35,14 +36,16 @@ class PostMeta extends Model implements MetaInterface {
     /**
      * @return string
      */
-    public function getTable() {
+    public function getTable()
+    {
         return $this->getConnection()->db->prefix . 'postmeta';
     }
 
     /**
      * @return mixed
      */
-    public function getMetaValue() {
+    public function getMetaValue()
+    {
         return $this->meta_value;
     }
 
@@ -51,7 +54,8 @@ class PostMeta extends Model implements MetaInterface {
      *
      * @return static
      */
-    public function setMetaValue( $value ) {
+    public function setMetaValue( $value )
+    {
         $this->meta_value = $value;
 
         return $this;
@@ -62,7 +66,8 @@ class PostMeta extends Model implements MetaInterface {
      *
      * @return static
      */
-    public function setMetaKey( string $key ) {
+    public function setMetaKey( string $key )
+    {
         $this->meta_key = $key;
 
         return $this;
@@ -71,7 +76,8 @@ class PostMeta extends Model implements MetaInterface {
     /**
      * @return string
      */
-    public function getMetaKey(): string {
+    public function getMetaKey(): string
+    {
         return $this->meta_key;
     }
 
@@ -80,7 +86,8 @@ class PostMeta extends Model implements MetaInterface {
      *
      * @return void
      */
-    public function setMetaValueAttribute( $value ) {
+    public function setMetaValueAttribute( $value )
+    {
         $this->attributes[ 'meta_value' ] = maybe_serialize( $value );
     }
 
@@ -89,8 +96,9 @@ class PostMeta extends Model implements MetaInterface {
      *
      * @return mixed
      */
-    public function getMetaValueAttribute( $value ) {
-        return maybe_unserialize($value);
+    public function getMetaValueAttribute( $value )
+    {
+        return maybe_unserialize( $value );
     }
 
 }

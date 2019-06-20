@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderScorer\ORM\WP;
+namespace UnderScorer\ORM\Models;
 
 /**
  * Class UserMeta
@@ -10,12 +10,14 @@ namespace UnderScorer\ORM\WP;
  * @property mixed  meta_value
  *
  */
-class UserMeta extends PostMeta {
+class UserMeta extends PostMeta
+{
 
     /**
      * @return string
      */
-    public function getTable() {
+    public function getTable()
+    {
         return $this->getConnection()->db->prefix . 'usermeta';
     }
 

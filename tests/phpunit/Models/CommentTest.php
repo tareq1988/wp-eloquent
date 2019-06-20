@@ -1,22 +1,24 @@
 <?php
 
-namespace UnderScorer\ORM\Tests\ORM\WP;
+namespace UnderScorer\ORM\Tests\Models;
 
 use UnderScorer\ORM\Tests\TestCase;
-use UnderScorer\ORM\WP\Comment;
-use UnderScorer\ORM\WP\Post;
-use UnderScorer\ORM\WP\User;
+use UnderScorer\ORM\Models\Comment;
+use UnderScorer\ORM\Models\Post;
+use UnderScorer\ORM\Models\User;
 
 /**
  * Class CommentTest
  * @package UnderScorer\ORM\Tests\ORM\WP
  */
-final class CommentTest extends TestCase {
+final class CommentTest extends TestCase
+{
 
     /**
-     * @covers \UnderScorer\ORM\WP\Comment::post
+     * @covers \UnderScorer\ORM\Models\Comment::post
      */
-    public function testHasRelationToPost(): void {
+    public function testHasRelationToPost(): void
+    {
 
         /**
          * @var Post $post
@@ -40,9 +42,10 @@ final class CommentTest extends TestCase {
     }
 
     /**
-     * @covers \UnderScorer\ORM\WP\Comment::post
+     * @covers \UnderScorer\ORM\Models\Comment::post
      */
-    public function testHasRelationToUser(): void {
+    public function testHasRelationToUser(): void
+    {
 
         /**
          * @var User $user

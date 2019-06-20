@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderScorer\ORM\WP;
+namespace UnderScorer\ORM\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use UnderScorer\ORM\Eloquent\Model;
@@ -9,13 +9,14 @@ use UnderScorer\ORM\Eloquent\Model;
  * Class Term
  * @package WPK\Core\Models\WP
  *
- * @property int    term_id
- * @property string name
- * @property string slug
- * @property int    term_group
+ * @property int          term_id
+ * @property string       name
+ * @property string       slug
+ * @property int          term_group
  * @property TermTaxonomy taxonomy
  */
-class Term extends Model {
+class Term extends Model
+{
 
     /**
      * @var bool
@@ -38,14 +39,16 @@ class Term extends Model {
     /**
      * @return BelongsTo
      */
-    public function taxonomy() {
+    public function taxonomy()
+    {
         return $this->belongsTo( TermTaxonomy::class, 'term_id' );
     }
 
     /**
      * @return string
      */
-    public function getTable() {
+    public function getTable()
+    {
         return $this->getConnection()->db->prefix . 'terms';
     }
 
