@@ -6,7 +6,8 @@ namespace UnderScorer\ORM\Contracts;
  * Interface MetaInterface
  * @package UnderScorer\ORM\Contracts
  */
-interface MetaInterface {
+interface MetaInterface
+{
 
     /**
      * @return mixed

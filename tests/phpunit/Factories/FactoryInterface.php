@@ -8,14 +8,15 @@ use UnderScorer\ORM\Eloquent\Model;
  * Interface FactoryInterface
  * @package UnderScorer\ORM\Tests\Factories
  */
-interface FactoryInterface {
+interface FactoryInterface
+{
 
     /**
      * @param array $attributes
      *
      * @return Model
      */
-    public function create(array $attributes = []): Model;
+    public function create( array $attributes = [] ): Model;
 
     /**
      * @return string
@@ -27,6 +28,6 @@ interface FactoryInterface {
      *
      * @return static
      */
-    public function setModelClass(string $modelClass);
+    public function setModelClass( string $modelClass );
 
 }

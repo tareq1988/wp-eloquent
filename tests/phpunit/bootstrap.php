@@ -10,12 +10,12 @@ $dir = __DIR__;
 
 require_once $dir . '/../../vendor/autoload.php';
 
-$dotenv = Dotenv::create( $dir );
-$dotenv->load();
-
-$testsDir = __DIR__ . '/Suite/wordpress-tests-lib';
+$testsDir = $dir . '/Suite/wordpress-tests-lib';
 
 if ( ! file_exists( $testsDir ) ) {
+    $dotenv = Dotenv::create( $dir );
+    $dotenv->load();
+
     $testsDir = getenv( 'WP_TESTS_DIR' );
 
     if ( ! $testsDir ) {
@@ -25,6 +25,9 @@ if ( ! file_exists( $testsDir ) ) {
     }
 
 }
+
+// Disable revisions
+define( 'WP_POST_REVISIONS', false );
 
 // Give access to tests_add_filter() function.
 require_once $testsDir . '/includes/functions.php';

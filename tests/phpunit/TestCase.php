@@ -11,7 +11,8 @@ use WP_Ajax_UnitTestCase as BaseTestCase;
  * Class TestCase
  * @package WPK\Tests
  */
-abstract class TestCase extends BaseTestCase {
+abstract class TestCase extends BaseTestCase
+{
 
     /**
      * @var PostFactory
@@ -31,7 +32,8 @@ abstract class TestCase extends BaseTestCase {
     /**
      * @return void
      */
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->postFactory    = new PostFactory( $this->factory()->post );

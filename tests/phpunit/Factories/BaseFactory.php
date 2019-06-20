@@ -9,7 +9,8 @@ use WP_UnitTest_Factory_For_Thing;
  * Class BaseFactory
  * @package UnderScorer\ORM\Tests\Factories
  */
-abstract class BaseFactory implements FactoryInterface {
+abstract class BaseFactory implements FactoryInterface
+{
 
     /**
      * @var string|Model
@@ -26,7 +27,8 @@ abstract class BaseFactory implements FactoryInterface {
      *
      * @param WP_UnitTest_Factory_For_Thing $factory
      */
-    public function __construct( WP_UnitTest_Factory_For_Thing $factory ) {
+    public function __construct( WP_UnitTest_Factory_For_Thing $factory )
+    {
         $this->WPFactory = $factory;
     }
 
@@ -35,7 +37,8 @@ abstract class BaseFactory implements FactoryInterface {
      *
      * @return Model
      */
-    public function create( array $attributes = [] ): Model {
+    public function create( array $attributes = [] ): Model
+    {
 
         $itemID = $this->WPFactory->create( $attributes );
 
@@ -51,7 +54,8 @@ abstract class BaseFactory implements FactoryInterface {
     /**
      * @return string
      */
-    public function getModelClass(): string {
+    public function getModelClass(): string
+    {
         return $this->modelClass;
     }
 
@@ -60,7 +64,8 @@ abstract class BaseFactory implements FactoryInterface {
      *
      * @return $this
      */
-    public function setModelClass( string $modelClass ) {
+    public function setModelClass( string $modelClass )
+    {
         $this->modelClass = $modelClass;
 
         return $this;

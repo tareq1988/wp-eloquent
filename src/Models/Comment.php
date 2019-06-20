@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderScorer\ORM\WP;
+namespace UnderScorer\ORM\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,7 +28,13 @@ use UnderScorer\ORM\Eloquent\Model;
  * @property User   user
  * @property Post   post
  */
-class Comment extends Model {
+class Comment extends Model
+{
+
+    /**
+     * @var string
+     */
+    const CREATED_AT = 'comment_date';
 
     /**
      * @var array
@@ -65,7 +71,8 @@ class Comment extends Model {
      *
      * @return BelongsTo
      */
-    public function post(): BelongsTo {
+    public function post(): BelongsTo
+    {
         return $this->belongsTo( Post::class, 'comment_post_ID' );
     }
 
@@ -74,8 +81,19 @@ class Comment extends Model {
      *
      * @return BelongsTo
      */
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo( User::class, 'user_id' );
+    }
+
+    /**
+     * Disable updated_at feature
+     *
+     * @param $value
+     */
+    public function setUpdatedAtAttribute($value)
+    {
+
     }
 
 }

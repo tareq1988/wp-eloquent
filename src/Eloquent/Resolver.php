@@ -4,7 +4,8 @@ namespace UnderScorer\ORM\Eloquent;
 
 use Illuminate\Database\ConnectionResolverInterface;
 
-class Resolver implements ConnectionResolverInterface {
+class Resolver implements ConnectionResolverInterface
+{
 
     /**
      * Get a database connection instance.
@@ -13,7 +14,8 @@ class Resolver implements ConnectionResolverInterface {
      *
      * @return Database
      */
-    public function connection( $name = null ) {
+    public function connection( $name = null )
+    {
         return Database::instance();
     }
 
@@ -22,7 +24,8 @@ class Resolver implements ConnectionResolverInterface {
      *
      * @return string
      */
-    public function getDefaultConnection() {
+    public function getDefaultConnection()
+    {
         // TODO: Implement getDefaultConnection() method.
     }
 
@@ -33,7 +36,8 @@ class Resolver implements ConnectionResolverInterface {
      *
      * @return void
      */
-    public function setDefaultConnection( $name ) {
+    public function setDefaultConnection( $name )
+    {
         // TODO: Implement setDefaultConnection() method.
     }
 

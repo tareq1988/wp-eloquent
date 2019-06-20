@@ -1,41 +1,46 @@
 <?php
 
-namespace UnderScorer\ORM\WP;
+namespace UnderScorer\ORM\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use UnderScorer\ORM\Builders\PostBuilder;
 use UnderScorer\ORM\Eloquent\Model;
+use WP_Post;
 
 /**
  * Class Post
  *
  * @package UnderScorer\ORM\WP
  *
- * @property int    post_author
- * @property string post_title
- * @property string post_content
- * @property string post_excerpt
- * @property string comment_status
- * @property string post_status
- * @property string post_type
- * @property string post_content_filtered
- * @property string post_parent
- * @property string guid
- * @property string post_mime_type
- * @property string comment_count
- * @property int    menu_order
- * @property Carbon post_date
- * @property Carbon post_date_gmt
- * @property Carbon post_modified
- * @property Carbon post_modified_gmt
- * @property User author
+ * @property int       ID
+ * @property int       post_author
+ * @property string    post_title
+ * @property string    title
+ * @property string    post_content
+ * @property string    content
+ * @property string    post_excerpt
+ * @property string    comment_status
+ * @property string    post_status
+ * @property string    post_type
+ * @property string    post_content_filtered
+ * @property string    post_parent
+ * @property string    guid
+ * @property string    post_mime_type
+ * @property string    comment_count
+ * @property int       menu_order
+ * @property Carbon    post_date
+ * @property Carbon    post_date_gmt
+ * @property Carbon    post_modified
+ * @property Carbon    post_modified_gmt
+ * @property User      author
  * @property Comment[] comments
  */
-class Post extends Model {
+class Post extends Model
+{
 
     use WithMeta;
 
@@ -48,29 +53,31 @@ class Post extends Model {
      * @var string
      */
     const UPDATED_AT = 'post_modified';
-
+    /**
+     * @var array
+     */
+    protected static $aliases = [
+        'content' => 'post_content',
+        'title'   => 'post_title',
+    ];
     /**
      * @var string
      */
     protected $primaryKey = 'ID';
-
     /**
      * @var string
      */
     protected $metaRelation = PostMeta::class;
-
     /**
      * @var string
      */
     protected $metaForeignKey = 'post_id';
-
     /**
      * @var array
      */
     protected $attributes = [
         'post_type' => 'post',
     ];
-
     /**
      * @var array
      */
@@ -80,7 +87,6 @@ class Post extends Model {
         'post_modified',
         'post_modified_gmt',
     ];
-
     /**
      * @var array
      */
@@ -99,7 +105,8 @@ class Post extends Model {
      *
      * @return mixed
      */
-    public function scopeType( $query, $type = 'post' ) {
+    public function scopeType( $query, $type = 'post' )
+    {
         return $query->where( 'post_type', '=', $type );
     }
 
@@ -111,7 +118,8 @@ class Post extends Model {
      *
      * @return mixed
      */
-    public function scopeStatus( $query, $status = 'publish' ) {
+    public function scopeStatus( $query, $status = 'publish' )
+    {
         return $query->where( 'post_status', '=', $status );
     }
 
@@ -123,7 +131,8 @@ class Post extends Model {
      *
      * @return mixed
      */
-    public function scopeAuthor( $query, $author = null ) {
+    public function scopeAuthor( $query, $author = null )
+    {
         if ( $author ) {
             return $query->where( 'post_author', '=', $author );
         }
@@ -136,7 +145,8 @@ class Post extends Model {
      *
      * @return HasMany
      */
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany( Comment::class, 'comment_post_ID' );
     }
 
@@ -145,14 +155,16 @@ class Post extends Model {
      *
      * @return TermTaxonomy[] | Collection
      */
-    public function taxonomy( string $taxonomy ) {
+    public function taxonomy( string $taxonomy )
+    {
         return $this->taxonomies()->where( 'taxonomy', '=', $taxonomy )->get();
     }
 
     /**
      * @return BelongsToMany
      */
-    public function taxonomies() {
+    public function taxonomies()
+    {
 
         $pivotTable = $this->getConnection()->db->prefix . 'term_relationships';
 
@@ -168,7 +180,8 @@ class Post extends Model {
      *
      * @return void
      */
-    public function addTerms( string $taxonomy, array $terms ) {
+    public function addTerms( string $taxonomy, array $terms )
+    {
 
         foreach ( $terms as $term ) {
 
@@ -202,10 +215,77 @@ class Post extends Model {
     }
 
     /**
+     * @param array $options
+     *
+     * @return bool
+     */
+    public function save( array $options = [] )
+    {
+        $preWpPost = new WP_Post( (object) $this->original );
+
+        $didExist = $this->exists;
+
+        if ( $didExist ) {
+            do_action( 'pre_post_update', $this->ID, $preWpPost );
+        }
+
+        $result = parent::save( $options );
+        $wpPost = $this->toWpPost();
+
+        if ( $result && $didExist ) {
+            do_action( 'edit_post', $this->ID, $wpPost );
+            do_action( 'post_updated', $this->ID, $wpPost, $preWpPost );
+        }
+
+        do_action( 'save_post', $this->ID, $wpPost, $didExist );
+        do_action( 'wp_insert_post', $this->ID, $wpPost, $didExist );
+
+        return $result;
+    }
+
+    /**
+     * @return WP_Post
+     */
+    public function toWpPost(): WP_Post
+    {
+        return new WP_Post( (object) $this->toArray() );
+    }
+
+    /**
      * @return BelongsTo
      */
-    public function author(): BelongsTo {
+    public function author(): BelongsTo
+    {
         return $this->belongsTo( User::class, 'post_author' );
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo( static::class, 'post_parent' );
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany( static::class, 'post_parent' );
+    }
+
+    /**
+     * @return PostBuilder
+     */
+    public static function query()
+    {
+        /**
+         * @var PostBuilder $query
+         */
+        $query = parent::query();
+
+        return $query;
     }
 
 }
