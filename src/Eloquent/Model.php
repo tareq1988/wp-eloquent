@@ -45,4 +45,18 @@ abstract class Model extends Eloquent {
 
         return $this->getConnection()->db->prefix . $table ;
     }
+
+    /**
+     * Get a new query builder instance for the connection.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function newBaseQueryBuilder() {
+
+        $connection = $this->getConnection();
+
+        return new Builder(
+            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
+        );
+    }
 }
