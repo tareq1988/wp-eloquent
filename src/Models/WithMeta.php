@@ -19,16 +19,14 @@ trait WithMeta
      *
      * @return MetaInterface
      */
-    public function getSingleMeta( string $key ): MetaInterface
+    public function getSingleMeta( string $key ): ?MetaInterface
     {
-
         return $this
             ->meta()
             ->where( 'meta_key', '=', $key )
             ->limit( 1 )
             ->get()
             ->first();
-
     }
 
     /**
@@ -73,6 +71,32 @@ trait WithMeta
             ->where( 'meta_key', '=', $key )
             ->get();
 
+    }
+
+    /**
+     * @param string $key
+     * @param        $value
+     * @param null   $prevValue
+     *
+     * @return bool|false|\Illuminate\Database\Eloquent\Model
+     */
+    public function updateMeta( string $key, $value, $prevValue = null )
+    {
+        $query = $this->meta()->where( 'meta_key', '=', $key );
+
+        if ( ! is_null( $prevValue ) ) {
+            $query->where( 'meta_value', '=', $prevValue );
+        }
+
+        $meta = $query->first();
+
+        if ( ! $meta ) {
+            return false;
+        }
+
+        $meta->meta_value = $value;
+
+        return $meta->save();
     }
 
 }
