@@ -16,6 +16,7 @@ use WP_User;
  * @property string user_pass
  * @property string slug
  * @property string email
+ * @property string user_email
  * @property string url
  * @property Carbon createdAt
  * @property string user_activation_key
@@ -47,13 +48,13 @@ class User extends Model
      */
     protected static $current;
     /**
+     * @var bool
+     */
+    public $timestamps = false;
+    /**
      * @var string
      */
     protected $primaryKey = 'ID';
-    /**
-     * @var bool
-     */
-    protected $timestamp = false;
     /**
      * @var string
      */
@@ -83,6 +84,17 @@ class User extends Model
         'last_name',
         'avatar',
         'created_at',
+    ];
+
+    protected $fillable = [
+        'user_login',
+        'user_email',
+        'user_nicename',
+        'user_url',
+        'user_pass',
+        'firstName',
+        'lastName',
+        'nickname',
     ];
 
     /**
