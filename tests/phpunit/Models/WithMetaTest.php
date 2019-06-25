@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderScorer\ORM\Tests\ORM\Models;
+namespace UnderScorer\ORM\Tests\Models;
 
 use UnderScorer\ORM\Models\Post;
 use UnderScorer\ORM\Tests\TestCase;
