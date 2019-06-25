@@ -138,4 +138,19 @@ class User extends Model
         return $user;
     }
 
+    /**
+     * @param array $options
+     *
+     * @return bool
+     */
+    public function save( array $options = [] ): bool
+    {
+        $result = parent::save( $options );
+
+        wp_cache_delete( $this->ID, 'users' );
+        wp_cache_delete( $this->login, 'userlogins' );
+
+        return $result;
+    }
+
 }

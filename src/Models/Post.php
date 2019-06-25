@@ -240,6 +240,8 @@ class Post extends Model
         do_action( 'save_post', $this->ID, $wpPost, $didExist );
         do_action( 'wp_insert_post', $this->ID, $wpPost, $didExist );
 
+        clean_post_cache( $this->ID );
+
         return $result;
     }
 
