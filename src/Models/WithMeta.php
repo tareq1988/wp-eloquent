@@ -87,9 +87,15 @@ trait WithMeta
         /**
          * @var MetaInterface $meta
          */
-        $meta = $query->firstOrCreate( [
+        $meta = $query->first( [
             'meta_key' => $key,
         ] );
+
+        if ( empty( $meta ) ) {
+            $meta = $this->meta()->create( [
+                'meta_key' => $key,
+            ] );
+        }
 
         if ( ! $meta ) {
             return false;
