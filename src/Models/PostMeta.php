@@ -38,7 +38,7 @@ class PostMeta extends Model implements MetaInterface
      */
     public function getTable()
     {
-        return $this->getConnection()->db->prefix . 'postmeta';
+        return $this->getConnection()->db->postmeta;
     }
 
     /**

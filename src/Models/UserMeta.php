@@ -18,7 +18,7 @@ class UserMeta extends PostMeta
      */
     public function getTable()
     {
-        return $this->getConnection()->db->prefix . 'usermeta';
+        return $this->getConnection()->db->usermeta;
     }
 
 }

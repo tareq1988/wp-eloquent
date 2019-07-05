@@ -86,6 +86,9 @@ class User extends Model
         'created_at',
     ];
 
+    /**
+     * @var array
+     */
     protected $fillable = [
         'user_login',
         'user_email',
@@ -122,11 +125,12 @@ class User extends Model
     }
 
     /**
+     * Return instance of currently logged in user
+     *
      * @return static | null
      */
     public static function current()
     {
-
         if ( empty( self::$current ) ) {
             $userID = get_current_user_id();
 
@@ -140,6 +144,34 @@ class User extends Model
     }
 
     /**
+     * @param array $options
+     *
+     * @return bool
+     */
+    public function save( array $options = [] ): bool
+    {
+        $exists   = $this->exists;
+        $prevData = null;
+
+        if ( $exists ) {
+            $prevData = $this->toWpUser();
+        }
+
+        $result = parent::save( $options );
+
+        wp_cache_delete( $this->ID, 'users' );
+        wp_cache_delete( $this->login, 'userlogins' );
+
+        if ( $exists ) {
+            do_action( 'profile_update', $this->ID, $prevData );
+        } else {
+            do_action( 'user_register', $this->ID );
+        }
+
+        return $result;
+    }
+
+    /**
      * @return WP_User
      */
     public function toWpUser()
@@ -148,21 +180,6 @@ class User extends Model
         $user->init( (object) $this->toArray(), get_current_blog_id() );
 
         return $user;
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return bool
-     */
-    public function save( array $options = [] ): bool
-    {
-        $result = parent::save( $options );
-
-        wp_cache_delete( $this->ID, 'users' );
-        wp_cache_delete( $this->login, 'userlogins' );
-
-        return $result;
     }
 
 }
