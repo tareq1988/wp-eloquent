@@ -278,6 +278,20 @@ class Post extends Model
     }
 
     /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     *
+     * @return PostBuilder
+     */
+    public function newEloquentBuilder( $query )
+    {
+        return new PostBuilder( $query );
+    }
+
+    /**
+     * This method acts as pure annotation for IDEs
+     *
      * @return PostBuilder
      */
     public static function query()

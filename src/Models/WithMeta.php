@@ -45,7 +45,6 @@ trait WithMeta
      */
     public function addMeta( string $key, $value ): MetaInterface
     {
-
         /**
          * @var MetaInterface $meta
          */
@@ -55,7 +54,6 @@ trait WithMeta
         ] );
 
         return $meta;
-
     }
 
     /**
@@ -65,12 +63,10 @@ trait WithMeta
      */
     public function getMeta( string $key )
     {
-
         return $this
             ->meta()
             ->where( 'meta_key', '=', $key )
             ->get();
-
     }
 
     /**
@@ -88,13 +84,24 @@ trait WithMeta
             $query->where( 'meta_value', '=', $prevValue );
         }
 
-        $meta = $query->first();
+        /**
+         * @var MetaInterface $meta
+         */
+        $meta = $query->first( [
+            'meta_key' => $key,
+        ] );
+
+        if ( empty( $meta ) ) {
+            $meta = $this->meta()->create( [
+                'meta_key' => $key,
+            ] );
+        }
 
         if ( ! $meta ) {
             return false;
         }
 
-        $meta->meta_value = $value;
+        $meta->setMetaValue( $value );
 
         return $meta->save();
     }
