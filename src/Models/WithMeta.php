@@ -15,19 +15,19 @@ trait WithMeta
 {
 
     /**
+     * Returns single meta value
+     *
      * @param string $key
      *
      * @return mixed
      */
     public function getSingleMeta( string $key )
     {
-        $metaValue = $this
+        return $this
             ->meta()
             ->where( 'meta_key', '=', $key )
             ->pluck( 'meta_value' )
             ->first();
-
-        return $metaValue;
     }
 
     /**
@@ -39,6 +39,8 @@ trait WithMeta
     }
 
     /**
+     * Adds new meta value to model
+     *
      * @param string $key
      * @param mixed  $value
      *
@@ -58,6 +60,8 @@ trait WithMeta
     }
 
     /**
+     * Fetches metas basing on key
+     *
      * @param string $key
      *
      * @return Collection|MetaInterface[]
@@ -71,6 +75,8 @@ trait WithMeta
     }
 
     /**
+     * Updates meta value
+     *
      * @param string $key
      * @param        $value
      * @param null   $prevValue
