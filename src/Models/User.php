@@ -29,31 +29,42 @@ class User extends Model
     use WithMeta;
 
     /**
+     * @var string
+     */
+    const CREATED_AT = 'user_registered';
+
+    /**
      * @var static
      */
     protected static $current;
+
     /**
      * @var bool
      */
     public $timestamps = false;
+
     /**
      * @var string
      */
     protected $primaryKey = 'ID';
+
     /**
      * @var string
      */
     protected $metaRelation = UserMeta::class;
+
     /**
      * @var string
      */
     protected $metaForeignKey = 'user_id';
+
     /**
      * @var array
      */
     protected $dates = [
         'user_registered',
     ];
+
     /**
      * The accessors to append to the model's array form.
      *
@@ -190,11 +201,6 @@ class User extends Model
     public function getLastNameAttribute()
     {
         return $this->getSingleMeta( 'last_name' );
-    }
-
-    public function getLoginAttribute()
-    {
-
     }
 
 }
