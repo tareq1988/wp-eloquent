@@ -344,6 +344,14 @@ class Post extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->getConnection()->db->posts;
+    }
+
+    /**
      * This method acts as pure annotation for IDEs
      *
      * @return PostBuilder
