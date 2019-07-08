@@ -14,6 +14,11 @@ class UserMeta extends PostMeta
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'umeta_id';
+
+    /**
      * @return string
      */
     public function getTable()
