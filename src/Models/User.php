@@ -22,6 +22,7 @@ use WP_User;
  * @property string user_status
  * @property string first_name
  * @property string last_name
+ * @property UserMeta[] meta
  */
 class User extends Model
 {

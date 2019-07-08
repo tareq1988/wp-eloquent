@@ -3,20 +3,16 @@
 namespace UnderScorer\ORM\Models;
 
 /**
- * Class UserMeta
- * @package UnderScorer\ORM\WP
- *
- * @property string meta_key
- * @property mixed  meta_value
- *
+ * Class TermMeta
+ * @package UnderScorer\ORM\Models
  */
-class UserMeta extends PostMeta
+class TermMeta extends PostMeta
 {
 
     /**
      * @var string
      */
-    protected $primaryKey = 'umeta_id';
+    protected $primaryKey = 'meta_id';
 
     /**
      * @var array
@@ -24,7 +20,7 @@ class UserMeta extends PostMeta
     protected $fillable = [
         'meta_key',
         'meta_value',
-        'user_id'
+        'term_id'
     ];
 
     /**
@@ -32,7 +28,7 @@ class UserMeta extends PostMeta
      */
     public function getTable()
     {
-        return $this->getConnection()->db->usermeta;
+        return $this->getConnection()->db->termmeta;
     }
 
 }

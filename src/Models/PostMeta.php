@@ -31,6 +31,7 @@ class PostMeta extends Model implements MetaInterface
     protected $fillable = [
         'meta_key',
         'meta_value',
+        'post_id'
     ];
 
     /**

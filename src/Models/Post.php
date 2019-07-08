@@ -3,12 +3,15 @@
 namespace UnderScorer\ORM\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use UnderScorer\ORM\Builders\PostBuilder;
 use UnderScorer\ORM\Eloquent\Model;
+use UnderScorer\ORM\Traits\Aliases;
 use WP_Post;
 
 /**
@@ -16,33 +19,36 @@ use WP_Post;
  *
  * @package UnderScorer\ORM\WP
  *
- * @property int       ID
- * @property int       post_author
- * @property string    post_title
- * @property string    title
- * @property string    post_content
- * @property string    content
- * @property string    post_excerpt
- * @property string    comment_status
- * @property string    post_status
- * @property string    post_type
- * @property string    post_content_filtered
- * @property string    post_parent
- * @property string    guid
- * @property string    post_mime_type
- * @property string    comment_count
- * @property int       menu_order
- * @property Carbon    post_date
- * @property Carbon    post_date_gmt
- * @property Carbon    post_modified
- * @property Carbon    post_modified_gmt
- * @property User      author
- * @property Comment[] comments
+ * @property int           ID
+ * @property int           post_author
+ * @property string        post_title
+ * @property string        title
+ * @property string        post_content
+ * @property string        content
+ * @property string        post_excerpt
+ * @property string        comment_status
+ * @property string        post_status
+ * @property string        post_type
+ * @property string        post_content_filtered
+ * @property string        post_parent
+ * @property string        guid
+ * @property string        post_mime_type
+ * @property string        comment_count
+ * @property int           menu_order
+ * @property Carbon        post_date
+ * @property Carbon        post_date_gmt
+ * @property Carbon        post_modified
+ * @property Carbon        post_modified_gmt
+ * @property User          author
+ * @property Comment[]     comments
+ * @property PostMeta[]    meta
+ * @property ThumbnailMeta thumbnail
+ * @property Attachment    attachment
  */
 class Post extends Model
 {
 
-    use WithMeta;
+    use WithMeta, Aliases;
 
     /**
      * @var string
@@ -57,8 +63,18 @@ class Post extends Model
      * @var array
      */
     protected static $aliases = [
-        'content' => 'post_content',
-        'title'   => 'post_title',
+        'title'      => 'post_title',
+        'content'    => 'post_content',
+        'excerpt'    => 'post_excerpt',
+        'slug'       => 'post_name',
+        'type'       => 'post_type',
+        'mime_type'  => 'post_mime_type',
+        'url'        => 'guid',
+        'author_id'  => 'post_author',
+        'parent_id'  => 'post_parent',
+        'created_at' => 'post_date',
+        'updated_at' => 'post_modified',
+        'status'     => 'post_status',
     ];
     /**
      * @var string
@@ -88,13 +104,20 @@ class Post extends Model
         'post_modified_gmt',
     ];
     /**
+     * @var string
+     */
+    protected $postType = 'post';
+    /**
      * @var array
      */
     protected $fillable = [
-        'post_title',
         'post_content',
-        'post_author',
+        'post_title',
+        'post_excerpt',
         'post_type',
+        'to_ping',
+        'pinged',
+        'post_content_filtered',
     ];
 
     /**
@@ -165,11 +188,9 @@ class Post extends Model
      */
     public function taxonomies()
     {
-
         $pivotTable = $this->getConnection()->db->prefix . 'term_relationships';
 
         return $this->belongsToMany( TermTaxonomy::class, $pivotTable, 'object_id', 'term_taxonomy_id' );
-
     }
 
     /**
@@ -182,7 +203,6 @@ class Post extends Model
      */
     public function addTerms( string $taxonomy, array $terms )
     {
-
         foreach ( $terms as $term ) {
 
             $name = $term[ 'name' ];
@@ -211,7 +231,22 @@ class Post extends Model
             $this->taxonomies()->attach( $termTaxonomy );
 
         }
+    }
 
+    /**
+     * @return HasMany
+     */
+    public function attachment()
+    {
+        return $this->children()->where( 'post_type', 'attachment' );
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany( static::class, 'post_parent' );
     }
 
     /**
@@ -270,11 +305,14 @@ class Post extends Model
     }
 
     /**
-     * @return HasMany
+     * Returns posts thumbnail
+     *
+     * @return HasOne
      */
-    public function children()
+    public function thumbnail()
     {
-        return $this->hasMany( static::class, 'post_parent' );
+        return $this->hasOne( ThumbnailMeta::class, 'post_id' )
+                    ->where( 'meta_key', '_thumbnail_id' );
     }
 
     /**
@@ -286,7 +324,23 @@ class Post extends Model
      */
     public function newEloquentBuilder( $query )
     {
-        return new PostBuilder( $query );
+        $builder = new PostBuilder( $query );
+
+        if ( $this->postType ) {
+            return $builder->where( 'post_type', '=', $this->postType );
+        }
+
+        return $builder;
+    }
+
+    /**
+     * @return Builder
+     */
+    public function newQuery()
+    {
+        return $this->postType ?
+            parent::newQuery()->where( 'post_type', '=', $this->postType ) :
+            parent::newQuery();
     }
 
     /**

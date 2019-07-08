@@ -18,6 +18,18 @@ use UnderScorer\ORM\Eloquent\Model;
 class Term extends Model
 {
 
+    use WithMeta;
+
+    /**
+     * @var string
+     */
+    public $metaForeignKey = 'term_id';
+
+    /**
+     * @var string
+     */
+    public $metaRelation = TermMeta::class;
+
     /**
      * @var bool
      */
