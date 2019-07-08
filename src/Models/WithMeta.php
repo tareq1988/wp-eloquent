@@ -17,16 +17,17 @@ trait WithMeta
     /**
      * @param string $key
      *
-     * @return MetaInterface
+     * @return mixed
      */
-    public function getSingleMeta( string $key ): ?MetaInterface
+    public function getSingleMeta( string $key )
     {
-        return $this
+        $metaValue = $this
             ->meta()
             ->where( 'meta_key', '=', $key )
-            ->limit( 1 )
-            ->get()
+            ->pluck( 'meta_value' )
             ->first();
+
+        return $metaValue;
     }
 
     /**
@@ -78,16 +79,18 @@ trait WithMeta
      */
     public function updateMeta( string $key, $value, $prevValue = null )
     {
-        $query = $this->meta()->where( 'meta_key', '=', $key );
+        $attributes = [
+            'meta_key' => $key,
+        ];
 
         if ( ! is_null( $prevValue ) ) {
-            $query->where( 'meta_value', '=', $prevValue );
+            $attributes[ 'meta_value' ] = $prevValue;
         }
 
         /**
          * @var MetaInterface $meta
          */
-        $meta = $query->first();
+        $meta = $this->meta()->firstOrCreate( $attributes );
 
         if ( empty( $meta ) ) {
             $meta = $this->meta()->create( [
@@ -102,6 +105,23 @@ trait WithMeta
         $meta->setMetaValue( $value );
 
         return $meta->save();
+    }
+
+    /**
+     * @param string $metaKey
+     * @param null   $value
+     *
+     * @return mixed
+     */
+    public function deleteMeta( string $metaKey, $value = null )
+    {
+        $query = $this->meta()->where('meta_key', '=', $metaKey);
+
+        if(!is_null($value)){
+            $query->where('meta_value', '=', $value);
+        }
+
+        return $query->delete();
     }
 
 }

@@ -60,15 +60,8 @@ class User extends Model
      * @var array
      */
     protected $appends = [
-        'login',
-        'email',
-        'slug',
-        'url',
-        'nickname',
         'first_name',
         'last_name',
-        'avatar',
-        'created_at',
     ];
 
     /**
@@ -172,9 +165,7 @@ class User extends Model
      */
     public function getFirstNameAttribute()
     {
-        $meta = $this->getSingleMeta( 'first_name' );
-
-        return $meta ? $meta->getMetaValue() : '';
+        return $this->getSingleMeta( 'first_name' );
     }
 
     /**
@@ -198,9 +189,12 @@ class User extends Model
      */
     public function getLastNameAttribute()
     {
-        $meta = $this->getSingleMeta( 'last_name' );
+        return $this->getSingleMeta( 'last_name' );
+    }
 
-        return $meta ? $meta->getMetaValue() : '';
+    public function getLoginAttribute()
+    {
+
     }
 
 }

@@ -62,7 +62,7 @@ final class PostTest extends TestCase
 
         $this->assertEquals(
             'This is a test!',
-            $meta->getMetaValue()
+            $meta
         );
 
     }
