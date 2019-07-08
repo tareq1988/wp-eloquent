@@ -15,14 +15,14 @@ use WP_User;
  * @property string login
  * @property string user_pass
  * @property string slug
- * @property string email
  * @property string user_email
  * @property string url
  * @property Carbon createdAt
  * @property string user_activation_key
  * @property string user_status
- * @property string firstName
- * @property string lastName
+ * @property string first_name
+ * @property string last_name
+ * @property UserMeta[] meta
  */
 class User extends Model
 {
@@ -30,60 +30,50 @@ class User extends Model
     use WithMeta;
 
     /**
-     * @var array
+     * @var string
      */
-    protected static $aliases = [
-        'login'       => 'user_login',
-        'email'       => 'user_email',
-        'slug'        => 'user_nicename',
-        'url'         => 'user_url',
-        'nickname'    => [ 'meta' => 'nickname' ],
-        'firstName'   => [ 'meta' => 'first_name' ],
-        'lastName'    => [ 'meta' => 'last_name' ],
-        'description' => [ 'meta' => 'description' ],
-        'createdAt'   => 'user_registered',
-    ];
+    const CREATED_AT = 'user_registered';
+
     /**
      * @var static
      */
     protected static $current;
+
     /**
      * @var bool
      */
     public $timestamps = false;
+
     /**
      * @var string
      */
     protected $primaryKey = 'ID';
+
     /**
      * @var string
      */
     protected $metaRelation = UserMeta::class;
+
     /**
      * @var string
      */
     protected $metaForeignKey = 'user_id';
+
     /**
      * @var array
      */
     protected $dates = [
         'user_registered',
     ];
+
     /**
      * The accessors to append to the model's array form.
      *
      * @var array
      */
     protected $appends = [
-        'login',
-        'email',
-        'slug',
-        'url',
-        'nickname',
         'first_name',
         'last_name',
-        'avatar',
-        'created_at',
     ];
 
     /**
@@ -95,8 +85,8 @@ class User extends Model
         'user_nicename',
         'user_url',
         'user_pass',
-        'firstName',
-        'lastName',
+        'first_name',
+        'last_name',
         'nickname',
     ];
 
@@ -180,6 +170,38 @@ class User extends Model
         $user->init( (object) $this->toArray(), get_current_blog_id() );
 
         return $user;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getFirstNameAttribute()
+    {
+        return $this->getSingleMeta( 'first_name' );
+    }
+
+    /**
+     * @param $name
+     */
+    public function updateFirstNameAttribute( $name )
+    {
+        $this->updateMeta( 'first_name', $name );
+    }
+
+    /**
+     * @param $name
+     */
+    public function updateLastNameAttribute( $name )
+    {
+        $this->updateMeta( 'last_name', $name );
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getLastNameAttribute()
+    {
+        return $this->getSingleMeta( 'last_name' );
     }
 
 }

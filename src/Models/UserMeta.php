@@ -14,6 +14,20 @@ class UserMeta extends PostMeta
 {
 
     /**
+     * @var string
+     */
+    protected $primaryKey = 'umeta_id';
+
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'meta_key',
+        'meta_value',
+        'user_id'
+    ];
+
+    /**
      * @return string
      */
     public function getTable()
