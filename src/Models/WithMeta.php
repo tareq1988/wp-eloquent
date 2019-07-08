@@ -5,6 +5,7 @@ namespace UnderScorer\ORM\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use UnderScorer\ORM\Contracts\MetaInterface;
+use UnderScorer\ORM\Eloquent\Model;
 
 /**
  * @method HasMany hasMany( string $related, string $foreignKey = null, string $localKey = null )
@@ -94,15 +95,10 @@ trait WithMeta
         }
 
         /**
-         * @var MetaInterface $meta
+         * @var MetaInterface|Model $meta
          */
         $meta = $this->meta()->firstOrCreate( $attributes );
 
-        if ( empty( $meta ) ) {
-            $meta = $this->meta()->create( [
-                'meta_key' => $key,
-            ] );
-        }
 
         if ( ! $meta ) {
             return false;
