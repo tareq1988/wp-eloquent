@@ -2,6 +2,7 @@
 
 namespace UnderScorer\ORM\Models;
 
+use UnderScorer\ORM\Collections\MetaCollection;
 use UnderScorer\ORM\Contracts\MetaInterface;
 use UnderScorer\ORM\Eloquent\Model;
 
@@ -92,6 +93,16 @@ abstract class Meta extends Model implements MetaInterface
     public function getMetaValueAttribute( $value )
     {
         return maybe_unserialize( $value );
+    }
+
+    /**
+     * @param array $models
+     *
+     * @return MetaCollection
+     */
+    public function newCollection( array $models = [] )
+    {
+        return MetaCollection::make( $models );
     }
 
 }
