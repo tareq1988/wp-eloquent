@@ -10,11 +10,6 @@ class TermMeta extends PostMeta
 {
 
     /**
-     * @var string
-     */
-    protected $primaryKey = 'meta_id';
-
-    /**
      * @var array
      */
     protected $fillable = [
