@@ -96,6 +96,18 @@ class Database implements ConnectionInterface
         return new Expression($value);
     }
 
+	/**
+	 * Get a new query builder instance.
+	 *
+	 * @return \Illuminate\Database\Query\Builder
+	 */
+	public function query()
+	{
+		return new Builder(
+			$this, $this->getQueryGrammar(), $this->getPostProcessor()
+		);
+	}
+
     /**
      * Run a select statement and return a single result.
      *
