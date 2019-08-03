@@ -22,7 +22,7 @@ abstract class Model extends Eloquent {
     /**
      * Get the database connection for the model.
      *
-     * @return \Illuminate\Database\Connection
+     * @return Database
      */
     public function getConnection() {
         return Database::instance();
