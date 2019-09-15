@@ -7,7 +7,7 @@ use WeDevs\ORM\Eloquent\Model;
 
 class UserMeta extends Model
 {
-    protected $primaryKey = 'meta_id';
+    protected $primaryKey = 'umeta_id';
 
     public $timestamps    = false;
 
