@@ -2,7 +2,6 @@
 
 namespace WeDevs\ORM\WP;
 
-
 use WeDevs\ORM\Eloquent\Model;
 
 class PostMeta extends Model
@@ -13,6 +12,6 @@ class PostMeta extends Model
 
     public function getTable()
     {
-        return $this->getConnection()->db->prefix . 'postmeta';
+        return $this->getConnection()->getTableName('postmeta');
     }
 }

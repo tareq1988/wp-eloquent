@@ -1,4 +1,5 @@
 <?php
+
 namespace WeDevs\ORM\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -22,7 +23,7 @@ abstract class Model extends Eloquent {
     /**
      * Get the database connection for the model.
      *
-     * @return \Illuminate\Database\Connection
+     * @return \WeDevs\ORM\Eloquent\Database
      */
     public function getConnection() {
         return Database::instance();
@@ -43,7 +44,7 @@ abstract class Model extends Eloquent {
 
         $table = str_replace( '\\', '', snake_case( str_plural( class_basename( $this ) ) ) );
 
-        return $this->getConnection()->db->prefix . $table ;
+        return $this->getConnection()->getTableName($table);
     }
 
     /**
@@ -52,7 +53,6 @@ abstract class Model extends Eloquent {
      * @return \Illuminate\Database\Query\Builder
      */
     protected function newBaseQueryBuilder() {
-
         $connection = $this->getConnection();
 
         return new Builder(

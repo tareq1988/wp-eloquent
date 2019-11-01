@@ -2,7 +2,6 @@
 
 namespace WeDevs\ORM\WP;
 
-
 use WeDevs\ORM\Eloquent\Model;
 
 class UserMeta extends Model
@@ -13,6 +12,6 @@ class UserMeta extends Model
 
     public function getTable()
     {
-        return $this->getConnection()->db->prefix . 'usermeta';
+        return $this->getConnection()->getTableName('usermeta');
     }
 }
