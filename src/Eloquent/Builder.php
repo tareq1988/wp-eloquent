@@ -1,4 +1,5 @@
 <?php
+
 namespace WeDevs\ORM\Eloquent;
 
 use Illuminate\Database\Query\Builder as EloquentBuilder;
@@ -28,5 +29,4 @@ class Builder extends EloquentBuilder {
 
         return $this;
     }
-
 }

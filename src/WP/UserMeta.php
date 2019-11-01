@@ -2,7 +2,6 @@
 
 namespace WeDevs\ORM\WP;
 
-
 use WeDevs\ORM\Eloquent\Model;
 
 class UserMeta extends Model
