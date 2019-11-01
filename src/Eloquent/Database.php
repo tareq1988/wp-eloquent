@@ -123,8 +123,9 @@ class Database implements ConnectionInterface
 
         $result = $this->db->get_row($query);
 
-        if ($result === false || $this->db->last_error)
-            throw new QueryException($query, $bindings, new \Exception($this->db->last_error));
+        if ($result === false || $this->db->last_error) {
+	        throw new QueryException($query, $bindings, new \Exception($this->db->last_error));
+        }
 
         return $result;
     }
@@ -145,8 +146,9 @@ class Database implements ConnectionInterface
 
         $result = $this->db->get_results($query);
 
-        if ($result === false || $this->db->last_error)
-            throw new QueryException($query, $bindings, new \Exception($this->db->last_error));
+        if ($result === false || $this->db->last_error) {
+	        throw new QueryException($query, $bindings, new \Exception($this->db->last_error));
+        }
 
         return $result;
     }
@@ -214,8 +216,9 @@ class Database implements ConnectionInterface
 
         $result = $this->db->query($new_query);
 
-        if ($result === false || $this->db->last_error)
-            throw new QueryException($new_query, $bindings, new \Exception($this->db->last_error));
+        if ($result === false || $this->db->last_error) {
+	        throw new QueryException($new_query, $bindings, new \Exception($this->db->last_error));
+        }
 
         return (array) $result;
     }
@@ -482,7 +485,7 @@ class Database implements ConnectionInterface
 	 * @param  string  $table
 	 * @return string
 	 */
-    protected function getTableName(string $table)
+    public function getTableName(string $table)
     {
     	return $this->db->prefix . $table;
     }
