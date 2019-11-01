@@ -53,6 +53,7 @@ class Database implements ConnectionInterface
         $this->config = [
             'name' => 'wp-eloquent-mysql2',
         ];
+
         $this->db = $wpdb;
     }
 
@@ -77,11 +78,9 @@ class Database implements ConnectionInterface
     {
         $processor = $this->getPostProcessor();
 
-        $table = $this->db->prefix . $table;
-
         $query = new Builder($this, $this->getQueryGrammar(), $processor);
 
-        return $query->from($table);
+        return $query->from($this->getTableName($table));
     }
 
     /**
@@ -351,6 +350,7 @@ class Database implements ConnectionInterface
     public function transaction(\Closure $callback, $attempts = 1)
     {
         $this->beginTransaction();
+
         try {
             $data = $callback();
             $this->commit();
@@ -369,6 +369,7 @@ class Database implements ConnectionInterface
     public function beginTransaction()
     {
         $transaction = $this->unprepared("START TRANSACTION;");
+
         if (false !== $transaction) {
             $this->transactionCount++;
         }
@@ -384,7 +385,9 @@ class Database implements ConnectionInterface
         if ($this->transactionCount < 1) {
             return;
         }
+
         $transaction = $this->unprepared("COMMIT;");
+
         if (false !== $transaction) {
             $this->transactionCount--;
         }
@@ -400,7 +403,9 @@ class Database implements ConnectionInterface
         if ($this->transactionCount < 1) {
             return;
         }
+
         $transaction = $this->unprepared("ROLLBACK;");
+
         if (false !== $transaction) {
             $this->transactionCount--;
         }
@@ -469,5 +474,16 @@ class Database implements ConnectionInterface
     public function getConfig($option = null)
     {
         return Arr::get($this->config, $option);
+    }
+
+	/**
+	 * Get the prefixed table name.
+	 *
+	 * @param  string  $table
+	 * @return string
+	 */
+    protected function getTableName(string $table)
+    {
+    	return $this->db->prefix . $table;
     }
 }
