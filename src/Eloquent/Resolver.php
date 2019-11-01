@@ -11,7 +11,7 @@ class Resolver implements ConnectionResolverInterface {
      *
      * @param  string $name
      *
-     * @return \Illuminate\Database\Connection
+     * @return \WeDevs\ORM\Eloquent\Database
      */
     public function connection( $name = null ) {
         return Database::instance();
