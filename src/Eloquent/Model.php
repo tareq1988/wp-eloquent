@@ -22,7 +22,7 @@ abstract class Model extends Eloquent {
     /**
      * Get the database connection for the model.
      *
-     * @return \Illuminate\Database\Connection
+     * @return \WeDevs\ORM\Eloquent\Database
      */
     public function getConnection() {
         return Database::instance();
@@ -52,7 +52,6 @@ abstract class Model extends Eloquent {
      * @return \Illuminate\Database\Query\Builder
      */
     protected function newBaseQueryBuilder() {
-
         $connection = $this->getConnection();
 
         return new Builder(

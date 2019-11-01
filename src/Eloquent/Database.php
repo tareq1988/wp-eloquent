@@ -10,7 +10,6 @@ use Illuminate\Support\Arr;
 
 class Database implements ConnectionInterface
 {
-
     public $db;
 
     /**
