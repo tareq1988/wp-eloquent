@@ -12,6 +12,6 @@ class PostMeta extends Model
 
     public function getTable()
     {
-        return $this->getConnection()->db->prefix . 'postmeta';
+        return $this->getConnection()->getTableName('postmeta');
     }
 }
