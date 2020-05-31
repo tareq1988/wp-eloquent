@@ -7,8 +7,9 @@ La bibliothèque est idéale pour une utilisation avec Bedrock / Sage de Roots.
 
 Plus besoin d'utiliser la vieille classe moisie WP_Query, on entre dans le monde du futur en produisant du code lisible et ré-utilisable ! Des fonctionnalités supplémentaires sont également disponibles pour une expérience d'utilisation personnalisée à WordPress.
 
-
 La librairie assurant la compatibilité avec Eloquent, vous pouvez consulter la [documentatio de l'ORM](https://laravel.com/docs/5.4/eloquent) si vous êtes un peu perdu :)
+
+Fork de la librairie [WP-Eloquent de Tarek1988](https://github.com/tareq1988/wp-eloquent) et de [WordPress Eloquent de Drew J Barlett](https://github.com/drewjbartlett/wordpress-eloquent)
 
 # Sommaire
 

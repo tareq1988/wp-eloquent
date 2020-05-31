@@ -1,22 +1,21 @@
 {
-    "name": "tareq1988/wp-eloquent",
+    "name": "amphibee/wordpress-eloquent-models",
     "description": "Eloquent ORM for WordPress",
     "keywords": ["wordpress", "plugin", "orm", "eloquent", "sql"],
-    "homepage": "https://github.com/tareq1988/wp-eloquent",
+    "homepage": "https://github.com/AmphiBee/wp-eloquent",
     "require": {
-        "illuminate/database": "^5.4",
-        "illuminate/pagination": "^5.4"
+        "as247/wp-eloquent": "^1.0"
     },
-    "license": "GPL-2.0-or-later",
+    "license": "GPL2+",
     "authors": [
         {
-            "name": "Tareq Hasan",
-            "email": "tareq@wedevs.com"
+            "name": "AmphiBee",
+            "email": "hello@amphibee.fr"
         }
     ],
     "autoload" : {
       "psr-4" : {
-        "WeDevs\\ORM\\": "src/"
+        "AmphiBee\\": "src/"
       }
     }
 }
