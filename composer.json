@@ -6,7 +6,7 @@
     "require": {
         "as247/wp-eloquent": "^1.0"
     },
-    "license": "GPL2+",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "AmphiBee",
