@@ -1,14 +1,14 @@
 WordPress Eloquent Models
 ===========================
 
-Le composant WordPress Eloquent Model est une boîte à outils complète fournissant un ORM et un générateur de schéma. Il prend en charge MySQL, Postgres, SQL Server et SQLite. Elle traduit les tables WordPress en [modèles compatibles avec Eloquent](https://laravel.com/docs/5.4/eloquent).
+Le composant WordPress Eloquent Model est une boîte à outils complète fournissant un ORM et un générateur de schéma. Il prend en charge MySQL, Postgres, SQL Server et SQLite. Elle traduit les tables WordPress en [modèles compatibles avec Eloquent](https://laravel.com/docs/7.x/eloquent).
 
 La bibliothèque est idéale pour une utilisation avec Bedrock / Sage de Roots.
 
 Plus besoin d'utiliser la vieille classe moisie WP_Query, on entre dans le monde du futur en produisant du code lisible et ré-utilisable ! Des fonctionnalités supplémentaires sont également disponibles pour une expérience d'utilisation personnalisée à WordPress.
 
 
-La librairie assurant la compatibilité avec Eloquent, vous pouvez consulter la [documentatio de l'ORM](https://laravel.com/docs/5.4/eloquent) si vous êtes un peu perdu :)
+La librairie assurant la compatibilité avec Eloquent, vous pouvez consulter la [documentation de l'ORM](https://laravel.com/docs/7.x/eloquent) si vous êtes un peu perdu :)
 
 # Sommaire
 
@@ -29,7 +29,9 @@ La librairie assurant la compatibilité avec Eloquent, vous pouvez consulter la 
 
 La méthode d'installation recommandée est [Composer](https://getcomposer.org/).
 
-TODO
+```
+composer require amphibee/wordpress-eloquent-models
+```
 
 ## Mise en place
 
@@ -62,13 +64,13 @@ $post->meta;
 
 ***Status***
 
-Par défaut, `Post` retourne l'ensemble des articles quelque soit leur status. Cela peut être modifié via un [scope local](https://laravel.com/docs/5.3/eloquent#query-scopes) `published` pour ne retourner que les articles publiés.
+Par défaut, `Post` retourne l'ensemble des articles quelque soit leur status. Cela peut être modifié via un [scope local](https://laravel.com/docs/7.x/eloquent#query-scopes) `published` pour ne retourner que les articles publiés.
 
 ```php
 Post::published()->get();
 ```
 
-Il est également possible de définir le statut en question via le [scope local](https://laravel.com/docs/5.3/eloquent#query-scopes) `status`.
+Il est également possible de définir le statut en question via le [scope local](https://laravel.com/docs/7.x/eloquent#query-scopes#query-scopes) `status`.
 
 ```php
 Post::status('draft')->get();
@@ -76,7 +78,7 @@ Post::status('draft')->get();
 
 ***Post Types***
 
-Par défaut, `Post` retourne l'ensemble des types de contenu. Cea peut être surchargé via le [scope local](https://laravel.com/docs/5.3/eloquent#query-scopes) `type`.
+Par défaut, `Post` retourne l'ensemble des types de contenu. Cea peut être surchargé via le [scope local](https://laravel.com/docs/7.x/eloquent#query-scopes#query-scopes) `type`.
 
 ```php
 Post::type('page')->get();
@@ -173,7 +175,7 @@ La méthode simplifiée d'ajout/édition d'option n'est pas encore gérée.
 
 ## Création de table
 
-La création de table s'effectue très facilement via l'API [Schema](https://laravel.com/docs/5.0/schema) de Eloquent.
+La création de table s'effectue très facilement via l'API [Schema](https://laravel.com/docs/7.x/migrations#creating-tables) de Eloquent.
 
 Voici un exemple pour la création d'une table `customer` :
 
