@@ -1,14 +1,14 @@
 <?php
 namespace AmphiBee\Eloquent\Model;
 
-use Corcel\Model\Option as CorcelOption;
+use Corcel\Model\Tag as CorcelTag;
 /**
- * Class Option
+ * Class Tag
  *
  * @package Corcel\Model
  * @author Junior Grossi <juniorgro@gmail.com>
  * @author Mickael Burguet <www.rundef.com>
  */
-class Option extends CorcelOption {
+class Tag extends CorcelTag {
 
 }

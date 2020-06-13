@@ -38,7 +38,7 @@ composer require amphibee/wordpress-eloquent-models
 Lancer simplement le code suivant (privilégiez l'usage de `use`) :
 
 ```php
-AmphiBee\Eloquent\Core\Capsule\Capsule::bootWp();
+AmphiBee\Eloquent\Database::connect();
 ```
 
 ## Modèles supportés
@@ -47,7 +47,7 @@ AmphiBee\Eloquent\Core\Capsule\Capsule::bootWp();
 
 ```php
 
-use \AmphiBee\Model\Model\Post;
+use \AmphiBee\Eloquent\Model\Post;
 
 // récupération du post avec l'ID 1
 $post = Post::find(1);
@@ -88,7 +88,7 @@ Post::type('page')->get();
 
 ```php
 
-use \AmphiBee\Model\Model\Comment;
+use \AmphiBee\Eloquent\Model\Comment;
 
 // récupère le commentaite ayant pour ID 12345
 $comment = Comment::find(12345);
@@ -112,7 +112,7 @@ $post->terms()->where('taxonomy', 'country');
 
 ```php
 
-use \AmphiBee\Model\Model\User;
+use \AmphiBee\Eloquent\Model\User;
 
 // récupère l'utilisateur ayant pour ID 123
 $user = User::find(123);
@@ -158,7 +158,7 @@ $post = Post::find(123)->deleteMeta('some_term_meta');
 Dans WordPress, la récupération d'options s'effectue avec la fonction `get_option`. Avec Eloquent, pour se passer d'un chargement inutile du Core WordPress, vous pourrez utiliser la fonction `getValue`.
 
 ```php
-use \AmphiBee\Model\Model\Post;
+use \AmphiBee\Eloquent\Model\Post;
 
 $siteurl = Option::getValue('siteurl');
 ```
@@ -166,7 +166,7 @@ $siteurl = Option::getValue('siteurl');
 Autre possibilité (la version qui serait utilisée sur Eloquent).
 
 ```php
-use \AmphiBee\Model\Model\Options;
+use \AmphiBee\Eloquent\Model\Options;
 
 $siteurl = Option::where('option_name', 'siteurl')->value('option_value');
 ```
@@ -204,7 +204,7 @@ Pour ajouter vos propres méthode à un modèle existant, vous pouvez réaliser 
 ```php
 namespace App\Model;
 
-class User extends \AmphiBee\Model\Model\User {
+class User extends \AmphiBee\Eloquent\Model\User {
 
     public function orders() {
         return $this->hasMany('\App\Model\User\Orders');
@@ -226,7 +226,7 @@ Un autre exemple serait de définir une nouvelle taxonomie à un article, par ex
 ```php
 namespace App\Model;
 
-class Post extends \AmphiBee\Model\Model\Post {
+class Post extends \AmphiBee\Eloquent\Model\Post {
 
     public function countries() {
         return $this->terms()->where('taxonomy', 'country');
@@ -242,7 +242,7 @@ Pour accéder au modèle d'un nouveau type de contenu, voici un exemple de ce qu
 ```php
 namespace App\Model;
 
-class CustomPostType extends \AmphiBee\Model\Model\Post {
+class CustomPostType extends \AmphiBee\Eloquent\Model\Post {
     protected $post_type  = 'custom_post_type';
 
     public static function getBySlug(string $slug): self

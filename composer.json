@@ -4,7 +4,7 @@
     "keywords": ["wordpress", "plugin", "orm", "eloquent", "sql"],
     "homepage": "https://github.com/AmphiBee/wp-eloquent",
     "require": {
-        "as247/wp-eloquent": "^1.0"
+      "jgrossi/corcel": "dev-master"
     },
     "license": "GPL-2.0-or-later",
     "authors": [

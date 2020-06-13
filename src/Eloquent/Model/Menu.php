@@ -1,14 +1,14 @@
 <?php
 namespace AmphiBee\Eloquent\Model;
 
-use Corcel\Model\Option as CorcelOption;
+use Corcel\Model\Menu as CorcelMenu;
 /**
- * Class Option
+ * Class Menu
  *
  * @package Corcel\Model
  * @author Junior Grossi <juniorgro@gmail.com>
  * @author Mickael Burguet <www.rundef.com>
  */
-class Option extends CorcelOption {
+class Menu extends CorcelMenu {
 
 }

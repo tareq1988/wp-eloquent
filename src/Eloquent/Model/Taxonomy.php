@@ -1,14 +1,14 @@
 <?php
 namespace AmphiBee\Eloquent\Model;
 
-use Corcel\Model\Option as CorcelOption;
+use Corcel\Model\Taxonomy as CorcelTaxonomy;
 /**
- * Class Option
+ * Class Taxonomy
  *
  * @package Corcel\Model
  * @author Junior Grossi <juniorgro@gmail.com>
  * @author Mickael Burguet <www.rundef.com>
  */
-class Option extends CorcelOption {
+class Taxonomy extends CorcelTaxonomy {
 
 }

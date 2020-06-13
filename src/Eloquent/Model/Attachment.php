@@ -1,19 +1,14 @@
 <?php
-
 namespace AmphiBee\Eloquent\Model;
 
+use Corcel\Model\Attachment as CorcelAttachment;
 /**
  * Class Attachment
  *
- * @package AmphiBee\Eloquent\Model
+ * @package Corcel\Model
+ * @author Junior Grossi <juniorgro@gmail.com>
+ * @author Mickael Burguet <www.rundef.com>
  */
-class Attachment extends Post
-{
-    /**
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function post()
-    {
-        return $this->belongsTo(Post::class, 'post_parent', 'ID');
-    }
+class Attachment extends CorcelAttachment {
+
 }
