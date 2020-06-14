@@ -4,7 +4,13 @@
     "keywords": ["wordpress", "plugin", "orm", "eloquent", "sql"],
     "homepage": "https://github.com/AmphiBee/wp-eloquent",
     "require": {
-      "jgrossi/corcel": "dev-master"
+        "php": ">=7.2.5",
+        "illuminate/database": "^7.0",
+        "illuminate/filesystem": "^7.0",
+        "illuminate/support": "^7.0",
+        "fzaninotto/faker": "^1.9",
+        "hautelook/phpass": "0.3.*",
+        "thunderer/shortcode": "^0.7.3"
     },
     "license": "GPL-2.0-or-later",
     "authors": [

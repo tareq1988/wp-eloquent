@@ -2,14 +2,31 @@
 
 namespace AmphiBee\Eloquent\Model\Meta;
 
-use Corcel\Model\Meta\PostMeta as CorcelPostMeta;
+use AmphiBee\Eloquent\Model\Post;
 
 /**
  * Class PostMeta
  *
- * @package Corcel\Model\Meta
+ * @package AmphiBee\Eloquent\Model\Meta
  * @author Junior Grossi <juniorgro@gmail.com>
  */
-class PostMeta extends CorcelPostMeta
+class PostMeta extends Meta
 {
+    /**
+     * @var string
+     */
+    protected $table = 'postmeta';
+
+    /**
+     * @var array
+     */
+    protected $fillable = ['meta_key', 'meta_value', 'post_id'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 }

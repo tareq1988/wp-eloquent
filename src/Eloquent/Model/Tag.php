@@ -1,14 +1,17 @@
 <?php
+
 namespace AmphiBee\Eloquent\Model;
 
-use Corcel\Model\Tag as CorcelTag;
 /**
- * Class Tag
+ * Tag class.
  *
- * @package Corcel\Model
- * @author Junior Grossi <juniorgro@gmail.com>
+ * @package AmphiBee\Eloquent\Model
  * @author Mickael Burguet <www.rundef.com>
  */
-class Tag extends CorcelTag {
-
+class Tag extends Taxonomy
+{
+    /**
+     * @var string
+     */
+    protected $taxonomy = 'post_tag';
 }

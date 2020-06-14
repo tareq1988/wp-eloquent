@@ -1,14 +1,30 @@
 <?php
+
 namespace AmphiBee\Eloquent\Model;
 
-use Corcel\Model\Page as CorcelPage;
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * Class Page
  *
- * @package Corcel\Model
+ * @package AmphiBee\Eloquent\Model
  * @author Junior Grossi <juniorgro@gmail.com>
- * @author Mickael Burguet <www.rundef.com>
  */
-class Page extends CorcelPage {
+class Page extends Post
+{
+    /**
+     * @var string
+     */
+    protected $postType = 'page';
 
+    /**
+     * @param Builder $query
+     * @return mixed
+     */
+    public function scopeHome(Builder $query)
+    {
+        return $query
+            ->where('ID', '=', Option::get('page_on_front'))
+            ->limit(1);
+    }
 }
