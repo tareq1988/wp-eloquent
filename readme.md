@@ -14,20 +14,27 @@ La librairie assurant la compatibilité avec Eloquent, vous pouvez consulter la 
 
  - [Installation](#installation)
  - [Mise en place](#mise-en-place)
- - [Posts](#posts)
- - [Comments](#comments)
- - [Terms](#terms)
- - [Users](#users)
+ - [Modèles supportés](#modèles-supportés)
+    - [Posts](#posts)
+    - [Comments](#comments)
+    - [Terms](#terms)
+    - [Users](#users)
+    - [Options](#options)
+    - [Menus](#menus)
+ - [Images](#images)
  - [Alias de champs](#alias-de-champs)
- - [Scope personnalisés](#scopes-personnaliss)
+ - [Scope personnalisés](#scopes-personnalisés)
  - [Pagination](#pagination)
  - [Meta](#meta)
- - [Options](#options)
+ - [Requête d'un Post à partir d'un champs personnalisé (Meta)](#requète-dun-post--partir-dun-champs-personnalisé-meta)
  - [Advanced Custom Fields](#advanced-custom-fields)
  - [Création de table](#creation-de-table)
- - [Requètes avancées](#requetes-avancees)
- - [Type de contenu personnalisés](#type-de-contenu-personnaliss)
- - [Créer vos propres modèles](#créer-vos-propres-modèles)
+ - [Requètes avancées](#requètes-avancées)
+ - [Type de contenu personnalisés](#type-de-contenu-personnalisés)
+ - [Modèles personnalisés](#modles-personnalisés)
+    - [Déclaration de types de contenu personnalisés et taxonomies](#déclaration-de-types-de-contenu-personnalisés-et-taxonomies)
+    - [Définition du modèle Eloquent](#définition-du-modèle-eloquent)
+    - [Requètes sur modèles personnalisés](#requètes-sur-modèles-personnalisés)
  - [Shortcode](#shortcode)
  - [Logs des requêtes](#logs-des-requêtes)
 
@@ -130,7 +137,36 @@ $user = User::find(123);
 
 ```
 
-## Menu
+### Options
+
+Dans WordPress, la récupération d'options s'effectue avec la fonction `get_option`. Avec Eloquent, pour se passer d'un chargement inutile du Core WordPress, vous pourrez utiliser la fonction `get` du modèle `Option`.
+
+```php
+$siteUrl = Option::get('siteurl');
+```
+
+Vous pouvez également ajouter d'autres options :
+
+```php
+Option::add('foo', 'bar'); // stockée en tant que chaine de caractères
+Option::add('baz', ['one' => 'two']); // le tableau sera sérialisé
+```
+
+Vous pouvez récupérez l'ensemble des options en tant que tableau (attention aux performances...) :
+
+```php
+$options = Option::asArray();
+echo $options['siteurl'];
+```
+
+Vous pouvez également spécifier les options spécifiques à récupérer :
+
+```php
+$options = Option::asArray(['siteurl', 'home', 'blogname']);
+echo $options['home'];
+```
+
+### Menus
 
 Pour récupérer un menu à partir de son alias, utiliser la syntaxe ci-dessous. Les éléments du menu seront retournés dans une variable `items` (c'est une collection d'objet de type `AmphiBee\Eloquent\Model\MenuItem`).
 
@@ -155,7 +191,7 @@ La méthode `instance()` retournera les objets correspondant :
 - `CustomLink` instance pour un élément de menu de type `custom`;
 - `Term` instance pour un élément de menu de type  `category`.
 
-### Multi-levels Menus
+#### Multi-levels Menus
 
 Pour gérer les menus à multi-niveaux, vous pouvez effectuer des itérations pour les placer au bon niveau, par exemple.
 
@@ -169,7 +205,6 @@ $parent = $items->first()->parent(); // Post, Page, CustomLink ou Term (categori
 Pour grouper les menus par parent, vous pouvez utiliser la méthode `->groupBy()`dans la collection `$menu->items`, qui rassemblera les éléments selon leur parent (`$item->parent()->ID`).
 
 Pour en savoir plus sur la méthode `groupBy()`, [consulter la documentation de Eloquent](https://laravel.com/docs/5.4/collections#method-groupby).
-
 
 
 ## Alias de champs
@@ -262,8 +297,7 @@ $postMeta = $post->createMeta('foo', 'bar'); // instance of PostMeta class
 $trueOrFalse = $post->saveMeta('foo', 'baz'); // boolean
 ```
 
-
-### Requête d'un Post à partir d'un champs personnalisé (Meta)
+## Requête d'un Post à partir d'un champs personnalisé (Meta)
 
 Il existe différent moyen d'effectuer une requête à partir d'une méta-donnée (meta) en utilisant des scopes sur un modèle `Post` (ou tout autre modèle utilisant le trait `HasMetaFields`) :
 
@@ -299,36 +333,6 @@ $post = Post::published()->hasMetaLike('author', 'B GOSSELET')->first();
 $post = Post::published()->hasMetaLike('author', 'N%Leroy')->first();
 ```
 
-## Advanced Custom Fields
-
-La librairie met à disposant la quasi-totalité des champs ACF (à l'exception du champs Google Map). Il permet de récupérer les champs de manière optimale sans passer par le module ACF.
-
-### Utilisation basique
-
-Pour récupérer une valeur d'un champs, il suffit d'initialiser un modèle de type `Post` et d'invoquer le champs personnalisé :
-
-```php
-$post = Post::find(1);
-echo $post->acf->website_url; // retourne l'url fournie dans un champs ayant pour clé website_url
-```
-
-### Performance
-
-Lorque l'on utilise `$post->acf->website_url`, des requètes additionnels sont exécutées pour récupérer le champs selon l'approche de ACF. Il est possible d'utiliser une méthode spécifique pour éviter ces requêtes additionnelles. Il suffit de renseigner le type de contenu personnalisé utilisé en tant que fonction :
-
- ```php
- // La méthode effectuant des requètes additionnelles
- echo $post->acf->author_username; // c'est un champs relatif à User
-
- // Sans requète additionnelle
- echo $post->acf->user('author_username');
- 
- // Autres exemples sans requètes
-echo $post->acf->text('text_field_name');
-echo $post->acf->boolean('boolean_field_name');
- ```
-
- > PS: La méthode doit être appelée au format camel case. Part eemple, pour le champs de type `date_picker` vous devez écrire `$post->acf->datePicker('fieldName')`. La libraire effectue la conversion de camel casse vers snake case pour vous.
 
 ## Images
 
@@ -364,34 +368,36 @@ if ($post->thumbnail !== null) {
 }
 ```
 
-## Options
+## Advanced Custom Fields
 
-Dans WordPress, la récupération d'options s'effectue avec la fonction `get_option`. Avec Eloquent, pour se passer d'un chargement inutile du Core WordPress, vous pourrez utiliser la fonction `get` du modèle `Option`.
+La librairie met à disposant la quasi-totalité des champs ACF (à l'exception du champs Google Map). Il permet de récupérer les champs de manière optimale sans passer par le module ACF.
 
-```php
-$siteUrl = Option::get('siteurl');
-```
+### Utilisation basique
 
-Vous pouvez également ajouter d'autres options :
+Pour récupérer une valeur d'un champs, il suffit d'initialiser un modèle de type `Post` et d'invoquer le champs personnalisé :
 
 ```php
-Option::add('foo', 'bar'); // stockée en tant que chaine de caractères
-Option::add('baz', ['one' => 'two']); // le tableau sera sérialisé
+$post = Post::find(1);
+echo $post->acf->website_url; // retourne l'url fournie dans un champs ayant pour clé website_url
 ```
 
-Vous pouvez récupérez l'ensemble des options en tant que tableau (attention aux performances...) :
+### Performance
 
-```php
-$options = Option::asArray();
-echo $options['siteurl'];
-```
+Lorque l'on utilise `$post->acf->website_url`, des requètes additionnels sont exécutées pour récupérer le champs selon l'approche de ACF. Il est possible d'utiliser une méthode spécifique pour éviter ces requêtes additionnelles. Il suffit de renseigner le type de contenu personnalisé utilisé en tant que fonction :
 
-Vous pouvez également spécifier les options spécifiques à récupérer :
+ ```php
+ // La méthode effectuant des requètes additionnelles
+ echo $post->acf->author_username; // c'est un champs relatif à User
 
-```php
-$options = Option::asArray(['siteurl', 'home', 'blogname']);
-echo $options['home'];
-```
+ // Sans requète additionnelle
+ echo $post->acf->user('author_username');
+ 
+ // Autres exemples sans requètes
+echo $post->acf->text('text_field_name');
+echo $post->acf->boolean('boolean_field_name');
+ ```
+
+ > PS: La méthode doit être appelée au format camel case. Part eemple, pour le champs de type `date_picker` vous devez écrire `$post->acf->datePicker('fieldName')`. La libraire effectue la conversion de camel casse vers snake case pour vous.
 
 ## Création de table
 
@@ -407,36 +413,157 @@ Par exemple, pour récupérer les clients dont l'age est supérieur à 40 ans :
 $users = Capsule::table('customers')->where('age', '>', 40)->get();
 ```
 
-## Type de contenu personnalisés
+## Modèles personnalisés
 
-Il est également possible de travailler avec des types de contenus personnalisés. Vous pouvez utiliser la méthode `type(string)` ou créer vos propres classes :
+### Déclaration de types de contenu personnalisés et taxonomies
+
+Nous utilisons le package [Sober Models](https://github.com/soberwp/models) pour déclarer les type de contenus personnalisés et taxonomies en tant que fichier de configuration. Par rapport à la documentation, la seule modification concerne l'emplacement du fichier de déclaration. Au lieu de le placer dans le dossier de thème, nous retrouverons les différents fichiers modèles dans le dossier `config/models/`
+
+Pour initialiser les modèles, exécuter la méthode suivante :
 
 ```php
-// en utilisatn la méthode type()
-$videos = Post::type('video')->status('publish')->get();
+new AmphiBee\Entities\Loader();
 
-// en définissant sa propore classe
-class Video extends AmphiBee\Eloquent\Model\Post
-{
-    protected $postType = 'video';
+// privilégiez l'utilisation de use
+
+use AmphiBee\Entities\Loader;
+
+class Lambda {
+    public function __construct() {
+        new Loader();
+    }
 }
-$videos = Video::status('publish')->get();
+
 ```
 
-En utilisant la méthode `type()`, l'objet retourné sera de type `AmphiBee\Eloquent\Model\Post`. En utilisant son propre modèle, cela permet d'aller plus loin dans les possibilités en pouvant y associer des méthodes et des propriétés personnalisés et en retournant le résultat en tant qu'objet `Video` par exemple.
+**Exemple pour un type de contenu personnalisé :**
 
-Type de contenu personnalisé et méta-données :
+```yaml
+active: true
+type: cpt
+name: book
+supports:
+  - title
+  - editor
+  - comments
+  - revisions
+  - trackbacks
+  - author
+  - excerpt
+  - page-attributes
+  - thumbnail
+  - custom-fields
+  - post-formats
+labels:
+  has_one: Book
+  has_many: Books
+  text_domain: sage
+  overrides:
+    name: Books
+    singular_name: Book
+    menu_name: Books
+    name_admin_bar: Book
+    add_new: Add New
+    add_new_item: Add New Book
+    edit_item: Edit Book
+    new_item: New Book
+    view_item: View Book
+    view_items: View Books
+    search_items: Search Books
+    not_found: No books found.
+    not_found_in_trash: No books found in Trash.
+    parent_item-colon: 'Parent Books:'
+    all_items: All Books
+    archives: Book Archives
+    attributes: Book Attributes
+    insert_into_item: Insert into book
+    uploaded_to_this_item: Uploaded to this book
+    featured_image: Featured Image
+    set_featured_image: Set featured image
+    remove_featured_image: Remove featured image
+    use_featured_image: Use featured image
+    filter_items_list: Filter books list
+    items_list_navigation: Books list navigation
+    items_list: Books list
+config:
+  public: true
+  publicly_queryable: true
+  show_ui: true
+  show_in_menu: true
+  query_var: true
+  has_archive: true
+  hierarchical: false
+  menu_position: 
+  can_export: true
+  capability_type: post
+  taxonomies:
+    - category
+    - post_tag
+  rewrite:
+    slug: book
+    with_front: true
+    feeds: true
+    pages: true
+```
 
-```php
-// Récupération de 3 élément d'un type de contenu personnalisé et en récupérant une méta-donnée (address)
-$stores = Post::type('store')->status('publish')->take(3)->get();
-foreach ($stores as $store) {
-    $storeAddress = $store->address; // option 1
-    $storeAddress = $store->meta->address; // option 2
-    $storeAddress = $store->fields->address; // option 3
-}
+**Exemple pour une taxonomie :**
 
-## Créer vos propres modèles
+```yaml
+active: true
+type: tax
+name: genre
+links:
+  - post
+  - book
+labels:
+  has_one: Genre
+  has_many: Genres
+  text_domain: sage
+  overrides:
+    name: Genres
+    singular_name: Genre
+    search_items: Search Genres
+    popular_items: Popular Tags
+    all_items: All Tags
+    parent_item: Parent Category
+    parent_item_colon: 'Parent Category:'
+    edit_item: Edit Tag
+    view_item: View Tag
+    update_item: Update Tag
+    add_new_item: Update New Tag
+    new_item_name: New Tag Name
+    separate_items_with_commas: Separate tags with commass
+    add_or_remove_items: Add or remove tags
+    choose_from_most_used: Choose from the most used tags
+    not_found: No tags found.
+    no_terms: No tags
+    items_list_navigation: Tags list navigation
+    items_list: Tags list
+config:
+  public: true
+  publicly_queryable: true
+  show_ui: true
+  show_in_menu: true
+  show_in_nav_menus: true
+  show_in_rest: true
+  rest_base: genre
+  rest_controller_class: WP_REST_Terms_Controller
+  show_tagcloud: true
+  show_in_quick_edit: true
+  show_admin_column: false
+  capabilities:
+    manage_terms: manage_categories
+    edit_terms: manage_categories
+    delete_terms: manage_categories
+    assign_terms: edit_posts
+  rewrite:
+    slug: genre
+    hierarchical: false
+```
+
+Pour plus d'information, consulter [cette page](https://github.com/soberwp/models).
+
+### Définition du modèle Eloquent
 
 Pour ajouter vos propres méthode à un modèle existant, vous pouvez réaliser des "extends" de ce modèles. Par exemple, pour le modèle `User`, vous pourriez produire le code suivant :
 
@@ -496,11 +623,43 @@ class CustomPostType extends \AmphiBee\Eloquent\Model\Post {
 
 CustomPostType::with(['categories', 'countries'])->find(1);
 
-### Shortcode
+```
+
+### Requètes sur modèles personnalisés
+
+Il est également possible de travailler avec des types de contenus personnalisés. Vous pouvez utiliser la méthode `type(string)` ou créer vos propres classes :
+
+```php
+// en utilisatn la méthode type()
+$videos = Post::type('video')->status('publish')->get();
+
+// en définissant sa propore classe
+class Video extends AmphiBee\Eloquent\Model\Post
+{
+    protected $postType = 'video';
+}
+$videos = Video::status('publish')->get();
+```
+
+En utilisant la méthode `type()`, l'objet retourné sera de type `AmphiBee\Eloquent\Model\Post`. En utilisant son propre modèle, cela permet d'aller plus loin dans les possibilités en pouvant y associer des méthodes et des propriétés personnalisés et en retournant le résultat en tant qu'objet `Video` par exemple.
+
+Type de contenu personnalisé et méta-données :
+
+```php
+// Récupération de 3 élément d'un type de contenu personnalisé et en récupérant une méta-donnée (address)
+$stores = Post::type('store')->status('publish')->take(3)->get();
+foreach ($stores as $store) {
+    $storeAddress = $store->address; // option 1
+    $storeAddress = $store->meta->address; // option 2
+    $storeAddress = $store->fields->address; // option 3
+}
+```
+
+## Shortcode
 
 Implémentation en cours
 
-```
+
 
 ## Logs des requêtes
 

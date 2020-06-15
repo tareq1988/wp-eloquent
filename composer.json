@@ -10,7 +10,10 @@
         "illuminate/support": "^7.0",
         "fzaninotto/faker": "^1.9",
         "hautelook/phpass": "0.3.*",
-        "thunderer/shortcode": "^0.7.3"
+        "thunderer/shortcode": "^0.7.3",
+        "hassankhan/config": "^1.0",
+        "symfony/yaml": "^3.4",
+        "soberwp/models": "dev-master"
     },
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -23,5 +26,11 @@
       "psr-4" : {
         "AmphiBee\\": "src/"
       }
+    },
+    "extra": {
+        "installer-paths": {
+            "vendor/{$name}/": ["type:wordpress-muplugin"]
+        },
+        "wordpress-install-dir": ""
     }
 }
