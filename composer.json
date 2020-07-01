@@ -13,7 +13,7 @@
         "thunderer/shortcode": "^0.7.3",
         "hassankhan/config": "^1.0",
         "symfony/yaml": "^3.4",
-        "soberwp/models": "dev-master"
+        "soberwp/models": "dev-master",
     },
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -28,9 +28,6 @@
       }
     },
     "extra": {
-        "installer-paths": {
-            "vendor/{$name}/": ["type:wordpress-muplugin"]
-        },
         "wordpress-install-dir": ""
     }
 }

@@ -5,7 +5,6 @@ class Loader
 {
     public function __construct()
     {
-        require __DIR__ . '/../../vendor/models/models.php';
         $this->setPath();
     }
 
