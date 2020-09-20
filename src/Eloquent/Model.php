@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  */
 abstract class Model extends Eloquent {
 
+    protected $db_prefix;
+
     /**
      * @param array $attributes
      */
@@ -17,6 +19,8 @@ abstract class Model extends Eloquent {
         static::$resolver = new Resolver();
 
         parent::__construct( $attributes );
+
+        $this->db_prefix = $this->getConnection()->db->prefix;
     }
 
     /**
@@ -38,12 +42,12 @@ abstract class Model extends Eloquent {
      */
     public function getTable() {
         if ( isset( $this->table ) ) {
-            return $this->table;
+            return $this->db_prefix . $this->table;
         }
 
         $table = str_replace( '\\', '', snake_case( str_plural( class_basename( $this ) ) ) );
 
-        return $this->getConnection()->db->prefix . $table ;
+        return $this->db_prefix . $table ;
     }
 
     /**
