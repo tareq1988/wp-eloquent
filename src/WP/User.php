@@ -7,6 +7,7 @@ use WeDevs\ORM\Eloquent\Model;
 
 class User extends Model
 {
+    protected static $useOneTableForMultisite = true;
     protected $primaryKey = 'ID';
     protected $timestamp = false;
 
