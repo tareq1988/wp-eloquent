@@ -7,6 +7,7 @@ use WeDevs\ORM\Eloquent\Model;
 
 class UserMeta extends Model
 {
+    protected static $useOneTableForMultisite = true;
     protected $primaryKey = 'umeta_id';
 
     public $timestamps    = false;

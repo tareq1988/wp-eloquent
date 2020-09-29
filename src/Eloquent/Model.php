@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 abstract class Model extends Eloquent {
 
     /**
+     * @var bool if true, only one table will be used for a multisite setup: wp_users, if false one for each site: wp_2_posts.
+     */
+    protected static $useOneTableForMultisite = false;
+
+    /**
      * @param array $attributes
      */
     public function __construct( array $attributes = array() ) {
@@ -42,8 +47,8 @@ abstract class Model extends Eloquent {
         }
 
         $table = str_replace( '\\', '', snake_case( str_plural( class_basename( $this ) ) ) );
-
-        return $this->getConnection()->db->prefix . $table ;
+        $prefix = static::$useOneTableForMultisite ? $this->getConnection()->db->base_prefix : $this->getConnection()->db->prefix;
+        return $prefix . $table ;
     }
 
     /**
