@@ -10,9 +10,7 @@
         "illuminate/support": "^7.0",
         "fzaninotto/faker": "^1.9",
         "hautelook/phpass": "0.3.*",
-        "thunderer/shortcode": "^0.7.3",
-        "hassankhan/config": "^1.0",
-        "symfony/yaml": "^3.4"
+        "thunderer/shortcode": "^0.7.3"
     },
     "license": "GPL-2.0-or-later",
     "authors": [
