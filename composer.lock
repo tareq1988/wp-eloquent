@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aaf117d71003614226383311fec0d83b",
+    "content-hash": "8732951b76ed816e763d1f8e3f92d158",
     "packages": [
+        {
+            "name": "as247/wp-eloquent",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/as247/wp-eloquent.git",
+                "reference": "7d6cb7702845b871200ae1a8cdeccedfe417d683"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/as247/wp-eloquent/zipball/7d6cb7702845b871200ae1a8cdeccedfe417d683",
+                "reference": "7d6cb7702845b871200ae1a8cdeccedfe417d683",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-pdo": "*",
+                "php": "^7.2"
+            },
+            "suggest": {
+                "doctrine/dbal": "Required to rename columns and drop SQLite columns (^2.6).",
+                "fzaninotto/faker": "Required to use the eloquent factory builder (^1.9.1).",
+                "symfony/finder": "Required to use Eloquent model factories (^4.3.4)."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "As247\\WpEloquent\\": "src/"
+                },
+                "files": [
+                    "src/Support/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "As247",
+                    "email": "as247@vui360.com",
+                    "homepage": "http://as247.vui360.com"
+                }
+            ],
+            "description": "Eloquent for wordpress",
+            "homepage": "https://github.com/as247",
+            "keywords": [
+                "drive",
+                "google",
+                "google-drive",
+                "php",
+                "storage"
+            ],
+            "time": "2020-09-22T03:29:02+00:00"
+        },
         {
             "name": "doctrine/inflector",
             "version": "2.0.3",
@@ -1626,7 +1682,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "as247/wp-eloquent": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

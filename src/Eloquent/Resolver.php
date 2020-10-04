@@ -1,4 +1,5 @@
 <?php
+
 namespace AmphiBee\Eloquent;
 
 use Illuminate\Database\ConnectionResolverInterface;
@@ -8,9 +9,9 @@ class Resolver implements ConnectionResolverInterface {
     /**
      * Get a database connection instance.
      *
-     * @param  string $name
+     * @param  string  $name
      *
-     * @return \Illuminate\Database\Connection
+     * @return bool|Database
      */
     public function connection( $name = null ) {
         return Database::instance();

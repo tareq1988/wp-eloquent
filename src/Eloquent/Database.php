@@ -1,21 +1,13 @@
 <?php
-
 namespace AmphiBee\Eloquent;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\ConnectionInterface;
-use Corcel\Database\Query\Grammars\Grammar;
+use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
 
-/**
- * Class Database
- *
- * @package AmphiBee\Eloquent
- * @author Olivier Gorzalka <amphibee.fr>
- */
 class Database implements ConnectionInterface
 {
 
@@ -36,9 +28,23 @@ class Database implements ConnectionInterface
     protected $config = [];
 
     /**
+     * All of the queries run against the connection.
+     *
+     * @var array
+     */
+    protected $queryLog = [];
+
+    /**
+     * Indicates whether queries are being logged.
+     *
+     * @var bool
+     */
+    protected $loggingQueries = false;
+
+    /**
      * Initializes the Database class
      *
-     * @return \WeDevs\ORM\Eloquent\Database
+     * @return Database
      */
     public static function instance()
     {
@@ -59,7 +65,7 @@ class Database implements ConnectionInterface
         global $wpdb;
 
         $this->config = [
-            'name' => 'wordpress',
+            'name' => 'wp-eloquent-mysql2',
         ];
         $this->db = $wpdb;
     }
@@ -81,7 +87,7 @@ class Database implements ConnectionInterface
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    public function table($table)
+    public function table($table, $as = null)
     {
         $processor = $this->getPostProcessor();
 
@@ -104,17 +110,17 @@ class Database implements ConnectionInterface
         return new Expression($value);
     }
 
-    /**
-     * Get a new query builder instance.
-     *
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function query()
-    {
-        return new Builder(
-            $this, $this->getQueryGrammar(), $this->getPostProcessor()
-        );
-    }
+	/**
+	 * Get a new query builder instance.
+	 *
+	 * @return \Illuminate\Database\Query\Builder
+	 */
+	public function query()
+	{
+		return new Builder(
+			$this, $this->getQueryGrammar(), $this->getPostProcessor()
+		);
+	}
 
     /**
      * Run a select statement and return a single result.
@@ -169,16 +175,128 @@ class Database implements ConnectionInterface
      * @param  bool  $useReadPdo
      * @return \Generator
      */
+    /**
+     * Run a select statement against the database and returns a generator.
+     *
+     * @param  string  $query
+     * @param  array  $bindings
+     * @param  bool  $useReadPdo
+     * @return \Generator
+     */
     public function cursor($query, $bindings = [], $useReadPdo = true)
     {
+        $statement = $this->run($query, $bindings, function ($query, $bindings) use ($useReadPdo) {
+            if ($this->pretending()) {
+                return [];
+            }
 
+            // First we will create a statement for the query. Then, we will set the fetch
+            // mode and prepare the bindings for the query. Once that's done we will be
+            // ready to execute the query against the database and return the cursor.
+            $statement = $this->prepared($this->getPdoForSelect($useReadPdo)
+                ->prepare($query));
+
+            $this->bindValues(
+                $statement, $this->prepareBindings($bindings)
+            );
+
+            // Next, we'll execute the query against the database and return the statement
+            // so we can return the cursor. The cursor will use a PHP generator to give
+            // back one row at a time without using a bunch of memory to render them.
+            $statement->execute();
+
+            return $statement;
+        });
+
+        while ($record = $statement->fetch()) {
+            yield $record;
+        }
     }
+
+    /**
+     * Get the PDO connection to use for a select query.
+     *
+     * @param  bool  $useReadPdo
+     * @return \PDO
+     */
+    protected function getPdoForSelect($useReadPdo = true)
+    {
+        return $useReadPdo ? $this->getReadPdo() : $this->getPdo();
+    }
+
+    /**
+     * Get the current PDO connection.
+     *
+     * @return \PDO
+     */
+    public function getPdo()
+    {
+        if ($this->pdo instanceof \Closure) {
+            return $this->pdo = call_user_func($this->pdo);
+        }
+
+        return $this->pdo;
+    }
+
+    /**
+     * Get the current PDO connection used for reading.
+     *
+     * @return \PDO
+     */
+    public function getReadPdo()
+    {
+        if ($this->transactions > 0) {
+            return $this->getPdo();
+        }
+
+        if ($this->recordsModified && $this->getConfig('sticky')) {
+            return $this->getPdo();
+        }
+
+        if ($this->readPdo instanceof \Closure) {
+            return $this->readPdo = call_user_func($this->readPdo);
+        }
+
+        return $this->readPdo ?: $this->getPdo();
+    }
+
+    /**
+     * Set the PDO connection.
+     *
+     * @param  \PDO|\Closure|null  $pdo
+     * @return $this
+     */
+    public function setPdo($pdo)
+    {
+        $this->transactions = 0;
+
+        $this->pdo = $pdo;
+
+        return $this;
+    }
+
+    /**
+     * Set the PDO connection used for reading.
+     *
+     * @param  \PDO|\Closure|null  $pdo
+     * @return $this
+     */
+    public function setReadPdo($pdo)
+    {
+        $this->readPdo = $pdo;
+
+        return $this;
+    }
+
+
 
     /**
      * A hacky way to emulate bind parameters into SQL query
      *
      * @param $query
      * @param $bindings
+     *
+     * @param  bool  $update
      *
      * @return mixed
      */
@@ -327,7 +445,6 @@ class Database implements ConnectionInterface
     public function prepareBindings(array $bindings)
     {
         $grammar = $this->getQueryGrammar();
-        $grammar->setTablePrefix($this->db->prefix);
 
         foreach ($bindings as $key => $value) {
 
@@ -434,7 +551,95 @@ class Database implements ConnectionInterface
      */
     public function pretend(\Closure $callback)
     {
-        // TODO: Implement pretend() method.
+        return $this->withFreshQueryLog(function () use ($callback) {
+            $this->pretending = true;
+
+            // Basically to make the database connection "pretend", we will just return
+            // the default values for all the query methods, then we will return an
+            // array of queries that were "executed" within the Closure callback.
+            $callback($this);
+
+            $this->pretending = false;
+
+            return $this->queryLog;
+        });
+    }
+
+    /**
+     * Execute the given callback in "dry run" mode.
+     *
+     * @param  \Closure  $callback
+     * @return array
+     */
+    protected function withFreshQueryLog($callback)
+    {
+        $loggingQueries = $this->loggingQueries;
+
+        // First we will back up the value of the logging queries property and then
+        // we'll be ready to run callbacks. This query log will also get cleared
+        // so we will have a new log of all the queries that are executed now.
+        $this->enableQueryLog();
+
+        $this->queryLog = [];
+
+        // Now we'll execute this callback and capture the result. Once it has been
+        // executed we will restore the value of query logging and give back the
+        // value of the callback so the original callers can have the results.
+        $result = $callback();
+
+        $this->loggingQueries = $loggingQueries;
+
+        return $result;
+    }
+
+    /**
+     * Get the connection query log.
+     *
+     * @return array
+     */
+    public function getQueryLog()
+    {
+        return $this->queryLog;
+    }
+
+    /**
+     * Clear the query log.
+     *
+     * @return void
+     */
+    public function flushQueryLog()
+    {
+        $this->queryLog = [];
+    }
+
+    /**
+     * Enable the query log on the connection.
+     *
+     * @return void
+     */
+    public function enableQueryLog()
+    {
+        $this->loggingQueries = true;
+    }
+
+    /**
+     * Disable the query log on the connection.
+     *
+     * @return void
+     */
+    public function disableQueryLog()
+    {
+        $this->loggingQueries = false;
+    }
+
+    /**
+     * Determine whether we're logging queries.
+     *
+     * @return bool
+     */
+    public function logging()
+    {
+        return $this->loggingQueries;
     }
 
     public function getPostProcessor()
@@ -447,15 +652,6 @@ class Database implements ConnectionInterface
         return new Grammar();
     }
 
-    /**
-     * Return self as PDO
-     *
-     * @return \WeDevs\ORM\Eloquent\Database
-     */
-    public function getPdo()
-    {
-        return $this;
-    }
 
     /**
      * Return the last insert id
