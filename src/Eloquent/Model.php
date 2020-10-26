@@ -1,4 +1,5 @@
 <?php
+
 namespace AmphiBee\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -17,7 +18,7 @@ abstract class Model extends Eloquent
     /**
      * Model constructor.
      *
-     * @param  array  $attributes
+     * @param array $attributes
      */
     public function __construct(array $attributes = array())
     {
@@ -30,8 +31,9 @@ abstract class Model extends Eloquent
      *
      * @return Database
      */
-    public function getConnection() {
-        return Database::instance();
+    public function getConnection()
+    {
+        return Connection::instance();
     }
 
     /**
@@ -45,13 +47,13 @@ abstract class Model extends Eloquent
     public function getTable()
     {
 
-        if ( ! empty($this->table)) {
+        if (!empty($this->table)) {
             $table = $this->table;
         } else {
             $table = str_replace('\\', '', snake_case(str_plural(class_basename($this))));
         }
 
-        return $this->getConnection()->db->prefix.$table;
+        return $this->getConnection()->db->prefix . $table;
     }
 
     /**
@@ -72,9 +74,9 @@ abstract class Model extends Eloquent
     /**
      * Retrieve the child model for a bound value.
      *
-     * @param  string  $childType
-     * @param  mixed  $value
-     * @param  string|null  $field
+     * @param string $childType
+     * @param mixed $value
+     * @param string|null $field
      *
      * @return Eloquent|null
      */
@@ -84,7 +86,7 @@ abstract class Model extends Eloquent
 
         if ($relationship instanceof HasManyThrough ||
             $relationship instanceof BelongsToMany) {
-            return $relationship->where($relationship->getRelated()->getTable().'.'.$field, $value)->first();
+            return $relationship->where($relationship->getRelated()->getTable() . '.' . $field, $value)->first();
         } else {
             return $relationship->where($field, $value)->first();
         }

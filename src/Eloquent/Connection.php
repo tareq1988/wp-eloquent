@@ -1,17 +1,36 @@
 <?php
+
 namespace AmphiBee\Eloquent;
 
+use AmphiBee\Eloquent\Manager as Capsule;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\Query\Grammars\Grammar;
-use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Query\Grammars\Grammar as QueryGrammar;
+use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\Schema\Builder as SchemaBuilder;
 use Illuminate\Support\Arr;
 
-class Database implements ConnectionInterface
+class Connection implements ConnectionInterface
 {
 
     public $db;
+
+    public $schemaGrammar;
+
+    /**
+     * The query post processor implementation.
+     *
+     * @var \Illuminate\Database\Query\Processors\Processor
+     */
+    protected $postProcessor;
+
+    /**
+     * The query grammar implementation.
+     *
+     * @var \Illuminate\Database\Query\Grammars\Grammar
+     */
+    protected $queryGrammar;
 
     /**
      * Count of active transactions
@@ -83,7 +102,7 @@ class Database implements ConnectionInterface
     /**
      * Begin a fluent query against a database table.
      *
-     * @param  string $table
+     * @param string $table
      *
      * @return \Illuminate\Database\Query\Builder
      */
@@ -101,7 +120,7 @@ class Database implements ConnectionInterface
     /**
      * Get a new raw query expression.
      *
-     * @param  mixed $value
+     * @param mixed $value
      *
      * @return \Illuminate\Database\Query\Expression
      */
@@ -110,27 +129,27 @@ class Database implements ConnectionInterface
         return new Expression($value);
     }
 
-	/**
-	 * Get a new query builder instance.
-	 *
-	 * @return \Illuminate\Database\Query\Builder
-	 */
-	public function query()
-	{
-		return new Builder(
-			$this, $this->getQueryGrammar(), $this->getPostProcessor()
-		);
-	}
+    /**
+     * Get a new query builder instance.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function query()
+    {
+        return new Builder(
+            $this, $this->getQueryGrammar(), $this->getPostProcessor()
+        );
+    }
 
     /**
      * Run a select statement and return a single result.
      *
-     * @param  string $query
-     * @param  array $bindings
-     * @param  bool $useReadPdo
+     * @param string $query
+     * @param array $bindings
+     * @param bool $useReadPdo
+     * @return mixed
      * @throws QueryException
      *
-     * @return mixed
      */
     public function selectOne($query, $bindings = [], $useReadPdo = true)
     {
@@ -147,12 +166,12 @@ class Database implements ConnectionInterface
     /**
      * Run a select statement against the database.
      *
-     * @param  string $query
-     * @param  array $bindings
-     * @param  bool $useReadPdo
+     * @param string $query
+     * @param array $bindings
+     * @param bool $useReadPdo
+     * @return array
      * @throws QueryException
      *
-     * @return array
      */
     public function select($query, $bindings = [], $useReadPdo = true)
     {
@@ -170,17 +189,17 @@ class Database implements ConnectionInterface
      * Run a select statement against the database and returns a generator.
      * TODO: Implement cursor and all the related sub-methods.
      *
-     * @param  string  $query
-     * @param  array  $bindings
-     * @param  bool  $useReadPdo
+     * @param string $query
+     * @param array $bindings
+     * @param bool $useReadPdo
      * @return \Generator
      */
     /**
      * Run a select statement against the database and returns a generator.
      *
-     * @param  string  $query
-     * @param  array  $bindings
-     * @param  bool  $useReadPdo
+     * @param string $query
+     * @param array $bindings
+     * @param bool $useReadPdo
      * @return \Generator
      */
     public function cursor($query, $bindings = [], $useReadPdo = true)
@@ -216,7 +235,7 @@ class Database implements ConnectionInterface
     /**
      * Get the PDO connection to use for a select query.
      *
-     * @param  bool  $useReadPdo
+     * @param bool $useReadPdo
      * @return \PDO
      */
     protected function getPdoForSelect($useReadPdo = true)
@@ -263,7 +282,7 @@ class Database implements ConnectionInterface
     /**
      * Set the PDO connection.
      *
-     * @param  \PDO|\Closure|null  $pdo
+     * @param \PDO|\Closure|null $pdo
      * @return $this
      */
     public function setPdo($pdo)
@@ -278,7 +297,7 @@ class Database implements ConnectionInterface
     /**
      * Set the PDO connection used for reading.
      *
-     * @param  \PDO|\Closure|null  $pdo
+     * @param \PDO|\Closure|null $pdo
      * @return $this
      */
     public function setReadPdo($pdo)
@@ -289,14 +308,13 @@ class Database implements ConnectionInterface
     }
 
 
-
     /**
      * A hacky way to emulate bind parameters into SQL query
      *
      * @param $query
      * @param $bindings
      *
-     * @param  bool  $update
+     * @param bool $update
      *
      * @return mixed
      */
@@ -329,11 +347,11 @@ class Database implements ConnectionInterface
     /**
      * Bind and run the query
      *
-     * @param  string $query
-     * @param  array $bindings
+     * @param string $query
+     * @param array $bindings
+     * @return array
      * @throws QueryException
      *
-     * @return array
      */
     public function bind_and_run($query, $bindings = array())
     {
@@ -344,14 +362,14 @@ class Database implements ConnectionInterface
         if ($result === false || $this->db->last_error)
             throw new QueryException($new_query, $bindings, new \Exception($this->db->last_error));
 
-        return (array) $result;
+        return (array)$result;
     }
 
     /**
      * Run an insert statement against the database.
      *
-     * @param  string $query
-     * @param  array $bindings
+     * @param string $query
+     * @param array $bindings
      *
      * @return bool
      */
@@ -363,8 +381,8 @@ class Database implements ConnectionInterface
     /**
      * Run an update statement against the database.
      *
-     * @param  string $query
-     * @param  array $bindings
+     * @param string $query
+     * @param array $bindings
      *
      * @return int
      */
@@ -376,8 +394,8 @@ class Database implements ConnectionInterface
     /**
      * Run a delete statement against the database.
      *
-     * @param  string $query
-     * @param  array $bindings
+     * @param string $query
+     * @param array $bindings
      *
      * @return int
      */
@@ -389,8 +407,8 @@ class Database implements ConnectionInterface
     /**
      * Execute an SQL statement and return the boolean result.
      *
-     * @param  string $query
-     * @param  array $bindings
+     * @param string $query
+     * @param array $bindings
      *
      * @return bool
      */
@@ -404,8 +422,8 @@ class Database implements ConnectionInterface
     /**
      * Run an SQL statement and get the number of rows affected.
      *
-     * @param  string $query
-     * @param  array $bindings
+     * @param string $query
+     * @param array $bindings
      *
      * @return int
      */
@@ -424,7 +442,7 @@ class Database implements ConnectionInterface
     /**
      * Run a raw, unprepared query against the PDO connection.
      *
-     * @param  string $query
+     * @param string $query
      *
      * @return bool
      */
@@ -438,7 +456,7 @@ class Database implements ConnectionInterface
     /**
      * Prepare the query bindings for execution.
      *
-     * @param  array $bindings
+     * @param array $bindings
      *
      * @return array
      */
@@ -467,8 +485,8 @@ class Database implements ConnectionInterface
     /**
      * Execute a Closure within a transaction.
      *
-     * @param  \Closure $callback
-     * @param  int  $attempts
+     * @param \Closure $callback
+     * @param int $attempts
      *
      * @return mixed
      *
@@ -481,7 +499,7 @@ class Database implements ConnectionInterface
             $data = $callback();
             $this->commit();
             return $data;
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->rollBack();
             throw $e;
         }
@@ -543,9 +561,67 @@ class Database implements ConnectionInterface
     }
 
     /**
+     * Get a schema builder instance for the connection.
+     *
+     * @return \Illuminate\Database\Schema\Builder
+     */
+    public function getSchemaBuilder()
+    {
+        if (is_null($this->schemaGrammar)) {
+            $this->useDefaultSchemaGrammar();
+        }
+
+        $capsule = new Capsule;
+
+        global $wpdb;
+        $dbuser = defined('DB_USER') ? DB_USER : '';
+        $dbpassword = defined('DB_PASSWORD') ? DB_PASSWORD : '';
+        $dbname = defined('DB_NAME') ? DB_NAME : '';
+        $dbhost = defined('DB_HOST') ? DB_HOST : '';
+        $charset = $wpdb->charset;
+        $collate = $wpdb->collate;
+        $capsule->addConnection([
+            'driver' => 'mysql',
+            'host' => $dbhost,
+            'database' => $dbname,
+            'username' => $dbuser,
+            'password' => $dbpassword,
+            'charset' => $charset,
+            'collation' => $collate,
+            'prefix' => $wpdb->base_prefix,
+        ], 'default');
+        $capsule->setAsGlobal();
+        $capsule->bootEloquent();
+
+
+        return new SchemaBuilder($capsule->getConnection());
+    }
+
+    /**
+     * Set the schema grammar to the default implementation.
+     *
+     * @return void
+     */
+    public function useDefaultSchemaGrammar()
+    {
+        $this->schemaGrammar = $this->getDefaultSchemaGrammar();
+    }
+
+    /**
+     * Get the default schema grammar instance.
+     *
+     * @return \Illuminate\Database\Schema\Grammars\Grammar
+     */
+    protected function getDefaultSchemaGrammar()
+    {
+
+        return $this->getQueryGrammar();
+    }
+
+    /**
      * Execute the given callback in "dry run" mode.
      *
-     * @param  \Closure $callback
+     * @param \Closure $callback
      *
      * @return array
      */
@@ -568,7 +644,7 @@ class Database implements ConnectionInterface
     /**
      * Execute the given callback in "dry run" mode.
      *
-     * @param  \Closure  $callback
+     * @param \Closure $callback
      * @return array
      */
     protected function withFreshQueryLog($callback)
@@ -642,6 +718,7 @@ class Database implements ConnectionInterface
         return $this->loggingQueries;
     }
 
+
     public function getPostProcessor()
     {
         return new Processor();
@@ -649,14 +726,14 @@ class Database implements ConnectionInterface
 
     public function getQueryGrammar()
     {
-        return new Grammar();
+        return new QueryGrammar();
     }
 
 
     /**
      * Return the last insert id
      *
-     * @param  string $args
+     * @param string $args
      *
      * @return int
      */
@@ -668,7 +745,7 @@ class Database implements ConnectionInterface
     /**
      * Get an option from the configuration options.
      *
-     * @param  string|null  $option
+     * @param string|null $option
      * @return mixed
      */
     public function getConfig($option = null)
