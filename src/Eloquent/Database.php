@@ -54,6 +54,10 @@ class Database implements ConnectionInterface
             'name' => 'wp-eloquent-mysql2',
         ];
         $this->db = $wpdb;
+
+        $this->dbh = (\Closure::bind(function () {
+            return $this->dbh;
+        }, $this->db, 'wpdb'))();
     }
 
     /**
@@ -163,7 +167,14 @@ class Database implements ConnectionInterface
      */
     public function cursor($query, $bindings = [], $useReadPdo = true)
     {
+        $query = $this->bind_params($query, $bindings);
 
+        if($result = mysqli_query($this->dbh, $query)) {
+            while($row = mysqli_fetch_object($result)) {
+                yield $row;
+            }
+            mysqli_free_result($result);
+        }  
     }
 
     /**
