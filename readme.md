@@ -98,7 +98,14 @@ class CustomTableModel extends Model {
         if ( isset( $this->table ) ){
             $prefix =  $this->getConnection()->db->prefix;
             
-            return $prefix . $this->table;
+            $prefixAlready = strpos($this->table,$prefix);
+
+            if($prefixAlready === false){
+                return $prefix . $this->table;
+            } else {
+                return $this->table;
+            }
+            
         }
 
         return parent::getTable();
