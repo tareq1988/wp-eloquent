@@ -3,17 +3,23 @@
 namespace AmphiBee\Eloquent\Model;
 
 use AmphiBee\Eloquent\Model;
-use AmphiBee\Eloquent\Model\Builder\TaxonomyBuilder;
+use AmphiBee\Eloquent\Connection;
+use AmphiBee\Eloquent\Concerns\Aliases;
 use AmphiBee\Eloquent\Model\Meta\TermMeta;
+use AmphiBee\Eloquent\Model\Builder\TaxonomyBuilder;
 
 /**
  * Class Taxonomy
  *
  * @package AmphiBee\Eloquent\Model
  * @author Junior Grossi <juniorgro@gmail.com>
+ * @author AmphiBee <hello@amphibee.fr>
+ * @author Thomas Georgel <thomas@hydrat.agency>
  */
 class Taxonomy extends Model
 {
+    use Aliases;
+
     /**
      * @var string
      */
@@ -33,6 +39,13 @@ class Taxonomy extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * @var array
+     */
+    protected static $aliases = [
+        'name' => 'taxonomy',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -59,12 +72,23 @@ class Taxonomy extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(Taxonomy::class, 'parent');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function posts()
     {
         return $this->belongsToMany(
-            Post::class, 'term_relationships', 'term_taxonomy_id', 'object_id'
+            Post::class,
+            (new Connection)->pdo->prefix() . 'term_relationships', # put prefix here to prevent issue
+            'term_taxonomy_id',
+            'object_id'
         );
     }
 
@@ -102,5 +126,66 @@ class Taxonomy extends Model
         }
 
         return parent::__get($key);
+    }
+    
+    /**
+     * Creates a query builder which get the term neighbors
+     * in hierarchy for this term (same parent).
+     *
+     * @return QueryBuilder
+     */
+    public function neighbors()
+    {
+        $parent  = $this->parent;
+        $exclude = $this->term_id;
+
+        $query = static::where('term_id', '!=', $exclude);
+
+        return $parent ? $query->where('parent', $parent) : $query->whereNull('parent');
+    }
+
+
+    
+    /******************************************/
+    /*                                        */
+    /*               WP methods               */
+    /*                                        */
+    /******************************************/
+
+
+    /**
+     * Get the taxonomy labels.
+     *
+     * @return stdObject The labels
+     */
+    public function getLabelsAttribute()
+    {
+        return (get_taxonomy($this->name))->labels;
+    }
+
+
+
+    /******************************************/
+    /*                                        */
+    /*             Query builders             */
+    /*                                        */
+    /******************************************/
+
+
+    /**
+     * Get current taxonomy using wordpress magic function
+     *
+     * @return Model null on failure
+     * @since 1.0.0
+     */
+    public static function current()
+    {
+        $id = get_queried_object_id();
+
+        if (!$id) {
+            return null;
+        }
+
+        return static::find($id);
     }
 }

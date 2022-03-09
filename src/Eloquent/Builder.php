@@ -11,7 +11,6 @@ use Illuminate\Database\Query\Builder as EloquentBuilder;
  */
 class Builder extends EloquentBuilder
 {
-
     /**
      * Add an exists clause to the query.
      *
@@ -22,7 +21,6 @@ class Builder extends EloquentBuilder
      */
     public function addWhereExistsQuery(EloquentBuilder $query, $boolean = 'and', $not = false)
     {
-
         $type = $not ? 'NotExists' : 'Exists';
 
         $this->wheres[] = compact('type', 'query', 'boolean');

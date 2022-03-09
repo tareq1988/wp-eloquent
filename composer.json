@@ -4,18 +4,22 @@
     "keywords": ["wordpress", "plugin", "orm", "eloquent", "sql"],
     "homepage": "https://github.com/AmphiBee/wp-eloquent",
     "require": {
-        "php": ">=7.2.5",
-        "illuminate/database": "^7.0",
-        "illuminate/filesystem": "^7.0",
-        "illuminate/support": "^7.0",
-        "hautelook/phpass": "0.3.*",
-        "thunderer/shortcode": "^0.7.3"
+        "php": ">=7.2.5|>=7.3|>=8.0",
+        "illuminate/database": "^7.0|^8.0",
+        "illuminate/filesystem": "^7.0|^8.0",
+        "illuminate/support": "^7.0|^8.0",
+        "thunderer/shortcode": "^0.7.3",
+        "bordoni/phpass": "dev-main"
     },
     "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "AmphiBee",
             "email": "hello@amphibee.fr"
+        },
+        {
+            "name": "Thomas Georgel",
+            "email": "thomas@hydrat.agency"
         }
     ],
     "autoload" : {

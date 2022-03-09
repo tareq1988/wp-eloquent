@@ -93,10 +93,15 @@ trait MetaFields
                 if (!is_string($key)) {
                     return $query->where('meta_key', $operator, $value);
                 }
-                $query->where('meta_key', $operator, $key);
 
-                return is_null($value) ? $query :
+                if (is_null($value)) {
+                    $query->where('meta_key', $operator, $key);
+                } else {
+                    $query->where('meta_key', '=', $key);
                     $query->where('meta_value', $operator, $value);
+                }
+
+                return $query;
             });
         }
 
@@ -208,10 +213,6 @@ trait MetaFields
      */
     public function getMeta($attribute)
     {
-        if ($meta = $this->meta->{$attribute}) {
-            return $meta;
-        }
-
-        return null;
+        return $this->meta->{$attribute} ?: null;
     }
 }

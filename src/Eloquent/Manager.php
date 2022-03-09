@@ -6,6 +6,12 @@ use Illuminate\Database\Capsule\Manager as CapsuleManager;
 use Illuminate\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
 
+/**
+ * Connection Resolver
+ *
+ * @package AmphiBee\Eloquent
+ * @author AmphiBee <hello@amphibee.fr>
+ */
 class Manager extends CapsuleManager
 {
     /**

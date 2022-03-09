@@ -11,10 +11,17 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Builder as SchemaBuilder;
 use Illuminate\Support\Arr;
 
+/**
+ * Connection Resolver
+ *
+ * @package AmphiBee\Eloquent
+ * @author AmphiBee <hello@amphibee.fr>
+ * @author Thomas Georgel <thomas@hydrat.agency>
+ */
 class Connection implements ConnectionInterface
 {
-
     public $db;
+    public $pdo;
 
     public $schemaGrammar;
 
@@ -87,6 +94,7 @@ class Connection implements ConnectionInterface
             'name' => 'wp-eloquent-mysql2',
         ];
         $this->db = $wpdb;
+        $this->pdo = new WpdbPdo($wpdb);
     }
 
     /**
@@ -110,7 +118,9 @@ class Connection implements ConnectionInterface
     {
         $processor = $this->getPostProcessor();
 
-        $table = $this->db->prefix . $table;
+        if (strpos($table, $this->db->prefix) !== 0) {
+            $table = $this->db->prefix . $table;
+        }
 
         $query = new Builder($this, $this->getQueryGrammar(), $processor);
 
@@ -137,7 +147,9 @@ class Connection implements ConnectionInterface
     public function query()
     {
         return new Builder(
-            $this, $this->getQueryGrammar(), $this->getPostProcessor()
+            $this,
+            $this->getQueryGrammar(),
+            $this->getPostProcessor()
         );
     }
 
@@ -157,8 +169,9 @@ class Connection implements ConnectionInterface
 
         $result = $this->db->get_row($query);
 
-        if ($result === false || $this->db->last_error)
+        if ($result === false || $this->db->last_error) {
             throw new QueryException($query, $bindings, new \Exception($this->db->last_error));
+        }
 
         return $result;
     }
@@ -179,8 +192,10 @@ class Connection implements ConnectionInterface
 
         $result = $this->db->get_results($query);
 
-        if ($result === false || $this->db->last_error)
+        if ($result === false || $this->db->last_error) {
+            dd($query);
             throw new QueryException($query, $bindings, new \Exception($this->db->last_error));
+        }
 
         return $result;
     }
@@ -188,14 +203,6 @@ class Connection implements ConnectionInterface
     /**
      * Run a select statement against the database and returns a generator.
      * TODO: Implement cursor and all the related sub-methods.
-     *
-     * @param string $query
-     * @param array $bindings
-     * @param bool $useReadPdo
-     * @return \Generator
-     */
-    /**
-     * Run a select statement against the database and returns a generator.
      *
      * @param string $query
      * @param array $bindings
@@ -216,7 +223,8 @@ class Connection implements ConnectionInterface
                 ->prepare($query));
 
             $this->bindValues(
-                $statement, $this->prepareBindings($bindings)
+                $statement,
+                $this->prepareBindings($bindings)
             );
 
             // Next, we'll execute the query against the database and return the statement
@@ -320,7 +328,6 @@ class Connection implements ConnectionInterface
      */
     private function bind_params($query, $bindings, $update = false)
     {
-
         $query = str_replace('"', '`', $query);
         $bindings = $this->prepareBindings($bindings);
 
@@ -359,8 +366,9 @@ class Connection implements ConnectionInterface
 
         $result = $this->db->query($new_query);
 
-        if ($result === false || $this->db->last_error)
+        if ($result === false || $this->db->last_error) {
             throw new QueryException($new_query, $bindings, new \Exception($this->db->last_error));
+        }
 
         return (array)$result;
     }
@@ -433,8 +441,9 @@ class Connection implements ConnectionInterface
 
         $result = $this->db->query($new_query);
 
-        if ($result === false || $this->db->last_error)
+        if ($result === false || $this->db->last_error) {
             throw new QueryException($new_query, $bindings, new \Exception($this->db->last_error));
+        }
 
         return intval($result);
     }
@@ -567,32 +576,34 @@ class Connection implements ConnectionInterface
      */
     public function getSchemaBuilder()
     {
+        global $wpdb;
+
         if (is_null($this->schemaGrammar)) {
             $this->useDefaultSchemaGrammar();
         }
 
         $capsule = new Capsule;
 
-        global $wpdb;
-        $dbuser = defined('DB_USER') ? DB_USER : '';
+        $dbuser     = defined('DB_USER') ? DB_USER : '';
         $dbpassword = defined('DB_PASSWORD') ? DB_PASSWORD : '';
-        $dbname = defined('DB_NAME') ? DB_NAME : '';
-        $dbhost = defined('DB_HOST') ? DB_HOST : '';
-        $charset = $wpdb->charset;
-        $collate = $wpdb->collate;
+        $dbname     = defined('DB_NAME') ? DB_NAME : '';
+        $dbhost     = defined('DB_HOST') ? DB_HOST : '';
+        $charset    = $wpdb->charset;
+        $collate    = $wpdb->collate;
+
         $capsule->addConnection([
-            'driver' => 'mysql',
-            'host' => $dbhost,
-            'database' => $dbname,
-            'username' => $dbuser,
-            'password' => $dbpassword,
-            'charset' => $charset,
+            'driver'    => 'mysql',
+            'host'      => $dbhost,
+            'database'  => $dbname,
+            'username'  => $dbuser,
+            'password'  => $dbpassword,
+            'charset'   => $charset,
             'collation' => $collate,
-            'prefix' => $wpdb->base_prefix,
+            'prefix'    => $wpdb->base_prefix,
         ], 'default');
+
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
-
 
         return new SchemaBuilder($capsule->getConnection());
     }
@@ -614,7 +625,6 @@ class Connection implements ConnectionInterface
      */
     protected function getDefaultSchemaGrammar()
     {
-
         return $this->getQueryGrammar();
     }
 
@@ -751,5 +761,15 @@ class Connection implements ConnectionInterface
     public function getConfig($option = null)
     {
         return Arr::get($this->config, $option);
+    }
+
+    /**
+     * Get the name of the connected database.
+     *
+     * @return string
+     */
+    public function getDatabaseName()
+    {
+        return defined('DB_NAME') ? DB_NAME : '';
     }
 }

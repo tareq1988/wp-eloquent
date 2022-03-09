@@ -13,10 +13,12 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 /**
  * Class User
  *
- * @package AmphiBee\Eloquent\Model
+ * @package AmphiBee\Eloquent
  * @author Ashwin Sureshkumar <ashwin.sureshkumar@gmail.com>
  * @author Mickael Burguet <www.rundef.com>
  * @author Junior Grossi <juniorgro@gmail.com>
+ * @author AmphiBee <hello@amphibee.fr>
+ * @author Thomas Georgel <thomas@hydrat.agency>
  */
 class User extends Model implements Authenticatable, CanResetPassword
 {
@@ -57,15 +59,16 @@ class User extends Model implements Authenticatable, CanResetPassword
      * @var array
      */
     protected static $aliases = [
-        'login' => 'user_login',
-        'email' => 'user_email',
-        'slug' => 'user_nicename',
-        'url' => 'user_url',
-        'nickname' => ['meta' => 'nickname'],
-        'first_name' => ['meta' => 'first_name'],
-        'last_name' => ['meta' => 'last_name'],
+        'id'          => 'ID',
+        'login'       => 'user_login',
+        'email'       => 'user_email',
+        'slug'        => 'user_nicename',
+        'url'         => 'user_url',
+        'nickname'    => ['meta' => 'nickname'],
+        'first_name'  => ['meta' => 'first_name'],
+        'last_name'   => ['meta' => 'last_name'],
         'description' => ['meta' => 'description'],
-        'created_at' => 'user_registered',
+        'created_at'  => 'user_registered',
     ];
 
     /**
@@ -208,5 +211,19 @@ class User extends Model implements Authenticatable, CanResetPassword
     public function setUpdatedAt($value)
     {
         //
+    }
+
+    /**
+     * Get the currently logged in user, return null if no user is logged.
+     *
+     * @return User|null
+     */
+    public static function current()
+    {
+        if (($id = get_current_user_id())) {
+            return static::find($id);
+        }
+
+        return null;
     }
 }

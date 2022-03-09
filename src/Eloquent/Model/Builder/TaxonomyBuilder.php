@@ -2,14 +2,14 @@
 
 namespace AmphiBee\Eloquent\Model\Builder;
 
-use Illuminate\Database\Eloquent\Builder;
-
 /**
  * Class TaxonomyBuilder
  *
  * @package Corcel
  * @author Junior Grossi <juniorgro@gmail.com>
  * @author Yoram de Langen <yoramdelangen@gmail.com>
+ * @author AmphiBee <hello@amphibee.fr>
+ * @author Thomas Georgel <thomas@hydrat.agency>
  */
 class TaxonomyBuilder extends Builder
 {

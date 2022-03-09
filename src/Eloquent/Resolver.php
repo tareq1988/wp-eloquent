@@ -4,6 +4,12 @@ namespace AmphiBee\Eloquent;
 
 use Illuminate\Database\ConnectionResolverInterface;
 
+/**
+ * Connection Resolver
+ *
+ * @package AmphiBee\Eloquent
+ * @author AmphiBee <hello@amphibee.fr>
+ */
 class Resolver implements ConnectionResolverInterface
 {
 

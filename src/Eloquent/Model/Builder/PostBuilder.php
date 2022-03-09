@@ -3,13 +3,15 @@
 namespace AmphiBee\Eloquent\Model\Builder;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
+use AmphiBee\Eloquent\Connection;
 
 /**
  * Class PostBuilder
  *
  * @package Corcel\Model\Builder
  * @author Junior Grossi <juniorgro@gmail.com>
+ * @author AmphiBee <hello@amphibee.fr>
+ * @author Thomas Georgel <thomas@hydrat.agency>
  */
 class PostBuilder extends Builder
 {
@@ -116,5 +118,25 @@ class PostBuilder extends Builder
                     ->orWhere('post_content', 'like', $term);
             });
         });
+    }
+
+    /**
+     * Order the results using a custom meta key.
+     *
+     * eg. : $query->orderByMeta('meta_key', 'DESC')
+     *
+     * @param string   $meta_key
+     * @param string   $order
+     *
+     * @return PostBuilder
+     */
+    public function orderByMeta(string $meta_key, string $order = 'ASC')
+    {
+        $db     = Connection::instance();
+        $prefix = $db->getPdo()->prefix();
+
+        return $this->select([$prefix.'posts.*', $db->raw("(select meta_value from {$prefix}postmeta where {$prefix}postmeta.meta_key = '{$meta_key}' and {$prefix}posts.ID = {$prefix}postmeta.post_id limit 1) as meta_ordering")])
+                ->orderByRaw('LENGTH(meta_ordering)', 'ASC') # alphanum support, avoid this kind of sort : 1, 10, 11, 7, 8
+                ->orderBy('meta_ordering', $order);
     }
 }

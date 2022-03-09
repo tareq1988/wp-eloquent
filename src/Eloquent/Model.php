@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
  */
 abstract class Model extends Eloquent
 {
-
     /**
      * Model constructor.
      *
@@ -46,14 +45,19 @@ abstract class Model extends Eloquent
      */
     public function getTable()
     {
-
         if (!empty($this->table)) {
             $table = $this->table;
         } else {
-            $table = str_replace('\\', '', snake_case(str_plural(class_basename($this))));
+            $table = str_replace('\\', '', Str::snake(Str::plural(class_basename($this))));
         }
 
-        return $this->getConnection()->db->prefix . $table;
+        $prefix = $this->getConnection()->db->prefix;
+
+        if (strpos($table, $prefix) !== 0) {
+            $table = $prefix . $table;
+        }
+
+        return $table;
     }
 
     /**
@@ -63,11 +67,12 @@ abstract class Model extends Eloquent
      */
     protected function newBaseQueryBuilder()
     {
-
         $connection = $this->getConnection();
 
         return new Builder(
-            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
+            $connection,
+            $connection->getQueryGrammar(),
+            $connection->getPostProcessor()
         );
     }
 

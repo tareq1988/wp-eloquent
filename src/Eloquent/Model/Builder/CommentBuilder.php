@@ -2,8 +2,6 @@
 
 namespace AmphiBee\Eloquent\Model\Builder;
 
-use Illuminate\Database\Eloquent\Builder;
-
 /**
  * Class CommentBuilder
  *
