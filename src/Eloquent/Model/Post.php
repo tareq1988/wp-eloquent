@@ -5,6 +5,7 @@ namespace AmphiBee\Eloquent\Model;
 use AmphiBee\Eloquent\Model;
 use AmphiBee\Eloquent\Connection;
 use AmphiBee\Eloquent\Concerns\Aliases;
+use Illuminate\Database\Eloquent\Builder;
 use AmphiBee\Eloquent\Concerns\MetaFields;
 use AmphiBee\Eloquent\Concerns\Shortcodes;
 use AmphiBee\Eloquent\Concerns\OrderScopes;
@@ -12,6 +13,7 @@ use AmphiBee\Eloquent\Model\Meta\ThumbnailMeta;
 use AmphiBee\Eloquent\Concerns\CustomTimestamps;
 use AmphiBee\Eloquent\Model\Builder\PostBuilder;
 use AmphiBee\Eloquent\Concerns\AdvancedCustomFields;
+use AmphiBee\Eloquent\Model\Contract\WpEloquentPost;
 
 /**
  * Class Post
@@ -22,7 +24,7 @@ use AmphiBee\Eloquent\Concerns\AdvancedCustomFields;
  * @author AmphiBee <hello@amphibee.fr>
  * @author Thomas Georgel <thomas@hydrat.agency>
  */
-class Post extends Model
+class Post extends Model implements WpEloquentPost
 {
     use Aliases,
         AdvancedCustomFields,
