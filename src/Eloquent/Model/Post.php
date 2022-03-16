@@ -191,7 +191,7 @@ class Post extends Model implements WpEloquentPost
     {
         return $this->belongsToMany(
             Taxonomy::class,
-            (new Connection)->pdo->prefix() . 'term_relationships',
+            $this->getConnection()->prefixTable('term_relationships'),
             'object_id',
             'term_taxonomy_id'
         );

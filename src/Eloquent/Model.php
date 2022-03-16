@@ -45,19 +45,9 @@ abstract class Model extends Eloquent
      */
     public function getTable()
     {
-        if (!empty($this->table)) {
-            $table = $this->table;
-        } else {
-            $table = str_replace('\\', '', Str::snake(Str::plural(class_basename($this))));
-        }
+        $table = $this->table ?: str_replace('\\', '', Str::snake(Str::plural(class_basename($this))));
 
-        $prefix = $this->getConnection()->db->prefix;
-
-        if (strpos($table, $prefix) !== 0) {
-            $table = $prefix . $table;
-        }
-
-        return $table;
+        return $this->getConnection()->prefixTable($table);
     }
 
     /**
@@ -89,9 +79,12 @@ abstract class Model extends Eloquent
     {
         $relationship = $this->{Str::plural(Str::camel($childType))}();
 
-        if ($relationship instanceof HasManyThrough ||
-            $relationship instanceof BelongsToMany) {
-            return $relationship->where($relationship->getRelated()->getTable() . '.' . $field, $value)->first();
+        if ($relationship instanceof HasManyThrough || $relationship instanceof BelongsToMany) {
+            $table = $this->getConnection()->prefixTable(
+                $relationship->getRelated()->getTable()
+            );
+
+            return $relationship->where($table . '.' . $field, $value)->first();
         } else {
             return $relationship->where($field, $value)->first();
         }
