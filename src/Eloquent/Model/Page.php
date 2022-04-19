@@ -3,6 +3,7 @@
 namespace AmphiBee\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Builder;
+use AmphiBee\Eloquent\Model\Contract\WpEloquentPost;
 
 /**
  * Class Page
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @author AmphiBee <hello@amphibee.fr>
  * @author Thomas Georgel <thomas@hydrat.agency>
  */
-class Page extends Post
+class Page extends Post implements WpEloquentPost
 {
     /**
      * @var string
@@ -32,7 +33,7 @@ class Page extends Post
 
     /**
      * Filter page which has template. If $template is provided, check filter pages with this template.
-     * 
+     *
      * @param Builder $query
      * @param string|array $template
      * @param string $operator (=, !=, in, not in..)
@@ -58,6 +59,7 @@ class Page extends Post
      */
     public function getTemplateAttribute(): string
     {
-        return $this->meta->_wp_page_template ?: '';;
+        return $this->meta->_wp_page_template ?: '';
+        ;
     }
 }
