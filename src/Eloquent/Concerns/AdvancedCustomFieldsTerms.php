@@ -7,10 +7,10 @@ use AmphiBee\Eloquent\Plugins\Acf\AdvancedCustomFields as BaseAdvancedCustomFiel
 /**
  * Trait HasAcfFields
  *
- * @package AmphiBee\Eloquent\Traits
+ * @package OP\Lib\WpEloquent\Traits
  * @author Junior Grossi <juniorgro@gmail.com>
  */
-trait AdvancedCustomFields
+trait AdvancedCustomFieldsTerms
 {
     /**
      * @return AdvancedCustomFields
@@ -31,7 +31,7 @@ trait AdvancedCustomFields
      */
     public function getFields(bool $format_value = true)
     {
-        return get_fields($this->id, $format_value);
+        return get_fields($this->getAcfFromIdentifier(), $format_value);
     }
 
 
@@ -47,7 +47,7 @@ trait AdvancedCustomFields
      */
     public function getField(string $key, bool $format_value = true)
     {
-        return get_field($key, $this->id, $format_value);
+        return get_field($key, $this->getAcfFromIdentifier(), $format_value);
     }
 
 
@@ -62,7 +62,7 @@ trait AdvancedCustomFields
      */
     public function setField(string $key, $value)
     {
-        return update_field($key, $value, $this->id);
+        return update_field($key, $value, $this->getAcfFromIdentifier());
     }
     
     
@@ -78,8 +78,20 @@ trait AdvancedCustomFields
     public function setFields(array $fields)
     {
         foreach ($fields as $key => $value) {
-            update_field($key, $value, $this->id);
+            update_field($key, $value, $this->getAcfFromIdentifier());
         }
         return $this;
+    }
+
+
+    /**
+     * Get the ACF identifier for terms.
+     * Used bu ACF get_field() method.
+     *
+     * @return string
+     */
+    public function getAcfFromIdentifier(): string
+    {
+        return sprintf('%s_%s', 'term', $this->term_id);
     }
 }
