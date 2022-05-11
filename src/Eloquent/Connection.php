@@ -772,17 +772,18 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Make sur that the gven table name has prefix, and return it.
+     * Make sure that the given table name is prefixed,
+     * otherwise prefix it, then return the table name.
      *
      * @param string $table_name
      * @return string
      */
     public function prefixTable($table_name)
     {
-        if (strpos($table_name, $this->db->prefix) !== 0) {
-            $table_name = $this->db->prefix . $table_name;
-        }
-        
-        return $table_name;
+        $prefix = $this->db->prefix ?: '';
+
+        return ($prefix && (strpos($table_name, $prefix) !== 0))
+                ? $prefix . $table_name
+                : $table_name;
     }
 }
